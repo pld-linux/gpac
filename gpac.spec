@@ -19,10 +19,8 @@ License:	GPL
 Group:		Applications
 Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
 # Source0-md5:	3a3e193e805ab177f44514ca3289b461
-# Source0-size:	2227080
 Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 # Source1-md5:	705f6993fbf890e92eb7a331e7c716d1
-# Source1-size:	916695
 URL:		http://gpac.sourceforge.net/
 BuildRequires: 	SDL-devel
 #BuildRequires:	wxWidgets-devel
