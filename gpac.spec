@@ -9,8 +9,8 @@
 %bcond_without	xvid
 %bcond_without	ffmpeg
 
-Summary:	GPAC is an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
-Summary(pl):	GPAC jest implementacj± standardu MPEG-4 Systems (ISO/IEC 14496-1)
+Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
+Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.2.1
 Release:	1
@@ -46,23 +46,24 @@ Requires:	SDL
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-GPAC is an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
-developed from scratch in ANSI C.
+GPAC is an implementation of the MPEG-4 Systems standard (ISO/IEC
+14496-1) developed from scratch in ANSI C.
 
-The main development goal is to provide a clean (a.k.a. readable by as many
-people as possible), small and flexible alternative to the MPEG-4 Systems
-reference software (known as IM1 and distributed in ISO/IEC 14496-5). The
-MPEG-4 Reference software is indeed a very large piece of software, designed
-to verify the standard rather than provide a small, production-stable software.
-GPAC is written in ANSI C for portability reasons (embedded platforms and DSPs)
-with a simple goal: keep the memory footprint as low as possible.
-The project will at term provide player(s), systems encoders and publishing
-tools for content distribution.
+The main development goal is to provide a clean (a.k.a. readable by as
+many people as possible), small and flexible alternative to the MPEG-4
+Systems reference software (known as IM1 and distributed in ISO/IEC
+14496-5). The MPEG-4 Reference software is indeed a very large piece
+of software, designed to verify the standard rather than provide a
+small, production-stable software. GPAC is written in ANSI C for
+portability reasons (embedded platforms and DSPs) with a simple goal:
+keep the memory footprint as low as possible. The project will at term
+provide player(s), systems encoders and publishing tools for content
+distribution.
 
-The current GPAC release (0.2.1) is far from being complete but already covers
-a very large part of the standard, and can probably be seen as the most
-advanced and robust 2D MPEG-4 Player available worldwide (its 3D side 
-is not to be neglected though).
+The current GPAC release (0.2.1) is far from being complete but
+already covers a very large part of the standard, and can probably be
+seen as the most advanced and robust 2D MPEG-4 Player available
+worldwide (its 3D side is not to be neglected though).
 
 %prep
 %setup -q -n gpac
