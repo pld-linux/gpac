@@ -1,14 +1,15 @@
-
+#
+# Conditional build:
 %bcond_with	amr
-%bcond_without	js
-%bcond_without	freetype
 %bcond_without	faad
-%bcond_without	jpeg
-%bcond_without	png
-%bcond_without	mad
-%bcond_without	xvid
 %bcond_without	ffmpeg
-
+%bcond_without	freetype
+%bcond_without	jpeg
+%bcond_without	js
+%bcond_without	mad
+%bcond_without	png
+%bcond_without	xvid
+#
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
@@ -16,7 +17,7 @@ Version:	0.2.1
 Release:	1
 License:	GPL
 Group:		Applications
-Source0:	http://mesh.dl.sourceforge.net/sourceforge/%{name}/%{name}-%{version}.tar.gz
+Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
 # Source0-md5:	3a3e193e805ab177f44514ca3289b461
 # Source0-size:	2227080
 Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
@@ -25,24 +26,24 @@ Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 URL:		http://gpac.sourceforge.net/
 BuildRequires: 	SDL-devel
 #BuildRequires:	wxWidgets-devel
-%{!?_without_js:BuildRequires: js-devel}
-%{!?_without_freetype:BuildRequires: freetype-devel}
-%{!?_without_faad:BuildRequires: faad2-devel}
-%{!?_without_jpeg:BuildRequires: libjpeg-devel}
-%{!?_without_png:BuildRequires: libpng-devel}
-%{!?_without_mad:BuildRequires: libmad-devel}
-%{!?_without_xvid:BuildRequires: xvid-devel}
-%{!?_without_ffmpeg:BuildRequires: ffmpeg-devel}
+%{?with_faad:BuildRequires:	faad2-devel}
+%{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
+%{?with_freetype:BuildRequires:	freetype-devel}
+%{?with_js:BuildRequires:	js-devel}
+%{?with_jpeg:BuildRequires:	libjpeg-devel}
+%{?with_mad:BuildRequires:	libmad-devel}
+%{?with_png:BuildRequires:	libpng-devel}
+%{?with_xvid:BuildRequires:	xvid-devel}
 Requires:	SDL
 #Requires:	wxWidgets
-%{!?_without_js:Requires: js}
-%{!?_without_freetype:Requires: freetype}
-%{!?_without_faad:Requires: faad2}
-%{!?_without_jpeg:Requires: libjpeg-6b}
-%{!?_without_png:Requires: libpng}
-%{!?_without_mad:Requires: libmad}
-%{!?_without_xvid:Requires: xvid}
-%{!?_without_ffmpeg:Requires: ffmpeg}
+%{?with_faad:Requires:	faad2}
+%{?with_ffmpeg:Requires:	ffmpeg}
+%{?with_freetype:Requires:	freetype}
+%{?with_js:Requires:	js}
+%{?with_jpeg:Requires:	libjpeg-6b}
+%{?with_png:Requires:	libpng}
+%{?with_mad:Requires:	libmad}
+%{?with_xvid:Requires:	xvid}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -65,28 +66,49 @@ already covers a very large part of the standard, and can probably be
 seen as the most advanced and robust 2D MPEG-4 Player available
 worldwide (its 3D side is not to be neglected though).
 
+%description -l pl
+GPAC to implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
+stworzona od zera w ANSI C.
+
+G³ównym celem tworzenia jej jest dostarczenie czystej (tzn. czytelnej
+dla jak najwiêkszej liczby ludzi), ma³ej i elastycznej alternatywy dla
+wzorcowego oprogramowania MPEG-4 Systems (znanego jako IM1 i
+rozprowadzanego w ISO/IEC 14496-5). Wzorcowe oprogramowanie MPEG-4
+jest bardzo du¿± porcj± kodu, zaprojektowan± raczej do zweryfikowania
+standardu ni¿ dostarczenia ma³ej, stabilnej wersji produkcyjnej. GPAC
+jest pisany w ANSI C ze wzglêdu na przeno¶no¶æ (platformy wbudowane i
+DSP) z prostym celem: wymagaæ tak ma³o pamiêci, jak to tylko mo¿liwe.
+Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzêdzia
+do publikacji w celu dystrybucji materia³ów.
+
+Aktualne wydanie GPAC (0.2.1) jest dalekie od ukoñczenia, ale ju¿
+pokrywa bardzo du¿± czê¶æ standardu i prawdopodobnie mo¿na je
+traktowaæ jako najbardziej zaawansowany i bogaty dwuwymiarowy
+odtwarzacz MPEG-4 (aspekt trójwymiarowy jednak nie ma pozostaæ
+zlekcewa¿ony).
+
 %prep
 %setup -q -n gpac
-%if %{?_with_amr:1}%{!?_with_amr:0}
+%if %{with amr}
 mkdir -p Plugins/amr_dec/AMR_NB
 cd Plugins/amr_dec/AMR_NB
-unzip -j ../../SOURCES/26073-530.zip
+# XXX: (conditional?) SourceN?
+unzip -j %{_sourcedir}/26073-530.zip
 unzip -j 26073-530_ANSI_C_source_code.zip
-cd ../../..
 %endif
 
-
 %build
-%configure --enable-oss-audio \
-	%{?_with_amr: --enable-amr-nb} \
-	%{?_without_js: --disable-js} \
-	%{?_without_freetype: --disable-ft} \
-	%{?_without_faad: --disable-faad} \
-	%{?_without_jpeg: --disable-jpeg} \
-	%{?_without_png: --disable-png} \
-	%{?_without_mad: --disable-mad} \
-	%{?_without_xvid: --disable-xvid} \
-	%{?_without_ffmpeg: --disable-ffmpeg}
+%configure \
+	--enable-oss-audio \
+	%{?with_amr: --enable-amr-nb} \
+	%{!?with_faad: --disable-faad} \
+	%{!?with_ffmpeg: --disable-ffmpeg} \
+	%{!?with_freetype: --disable-ft} \
+	%{!?with_jpeg: --disable-jpeg} \
+	%{!?with_js: --disable-js} \
+	%{!?with_mad: --disable-mad} \
+	%{!?with_png: --disable-png} \
+	%{!?with_xvid: --disable-xvid}
 
 %{__make} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -98,7 +120,6 @@ rm -rf $RPM_BUILD_ROOT
 	bindir=$RPM_BUILD_ROOT%{_bindir} \
 	libdir=$RPM_BUILD_ROOT%{_libdir} \
 	mandir=$RPM_BUILD_ROOT%{_mandir}
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
