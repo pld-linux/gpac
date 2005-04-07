@@ -1,0 +1,4 @@
+16c16
+< INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(plugdir)\"
+---
+> INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(real_plugdir)\"
