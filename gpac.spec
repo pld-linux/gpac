@@ -13,14 +13,15 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.2.1
-Release:	1
+Version:	0.2.4
+Release:	0.1
 License:	GPL
 Group:		Applications
 Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
-# Source0-md5:	3a3e193e805ab177f44514ca3289b461
+# Source0-md5:	cbbea28e99c23d1839d38c54c2cc090a
 Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 # Source1-md5:	705f6993fbf890e92eb7a331e7c716d1
+Patch0:		%{name}-install.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires: 	SDL-devel
 #BuildRequires:	wxWidgets-devel
@@ -38,11 +39,13 @@ Requires:	SDL
 %{?with_ffmpeg:Requires:	ffmpeg}
 %{?with_freetype:Requires:	freetype}
 %{?with_js:Requires:	js}
-%{?with_jpeg:Requires:	libjpeg-6b}
+%{?with_jpeg:Requires:	libjpeg}
 %{?with_png:Requires:	libpng}
 %{?with_mad:Requires:	libmad}
 %{?with_xvid:Requires:	xvid}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define         _noautoreq   libm4systems.so
 
 %description
 GPAC is an implementation of the MPEG-4 Systems standard (ISO/IEC
@@ -59,11 +62,6 @@ keep the memory footprint as low as possible. The project will at term
 provide player(s), systems encoders and publishing tools for content
 distribution.
 
-The current GPAC release (0.2.1) is far from being complete but
-already covers a very large part of the standard, and can probably be
-seen as the most advanced and robust 2D MPEG-4 Player available
-worldwide (its 3D side is not to be neglected though).
-
 %description -l pl
 GPAC to implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 stworzona od zera w ANSI C.
@@ -79,12 +77,6 @@ DSP) z prostym celem: wymagaæ tak ma³o pamiêci, jak to tylko mo¿liwe.
 Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzêdzia
 do publikacji w celu dystrybucji materia³ów.
 
-Aktualne wydanie GPAC (0.2.1) jest dalekie od ukoñczenia, ale ju¿
-pokrywa bardzo du¿± czê¶æ standardu i prawdopodobnie mo¿na je
-traktowaæ jako najbardziej zaawansowany i bogaty dwuwymiarowy
-odtwarzacz MPEG-4 (aspekt trójwymiarowy jednak nie ma pozostaæ
-zlekcewa¿ony).
-
 %prep
 %setup -q -n gpac
 %if %{with amr}
@@ -94,6 +86,7 @@ cd Plugins/amr_dec/AMR_NB
 unzip -j %{_sourcedir}/26073-530.zip
 unzip -j 26073-530_ANSI_C_source_code.zip
 %endif
+chmod a+x configure
 
 %build
 %configure \
@@ -117,7 +110,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	bindir=$RPM_BUILD_ROOT%{_bindir} \
 	libdir=$RPM_BUILD_ROOT%{_libdir} \
-	mandir=$RPM_BUILD_ROOT%{_mandir}
+	mandir=$RPM_BUILD_ROOT%{_mandir} \
+        plugdir=$RPM_BUILD_ROOT%{_libdir}/gpac \
+        real_plugdir=%{_libdir}/gpac \
+        prefix=$RPM_BUILD_ROOT/usr
 
 %clean
 rm -rf $RPM_BUILD_ROOT
