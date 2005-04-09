@@ -1,4 +1,22 @@
-16c16
-< INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(plugdir)\"
----
-> INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(real_plugdir)\"
+--- gpac/Applications/MP4Client/Makefile.orig	2005-04-09 04:10:13.000000000 +0200
++++ gpac/Applications/MP4Client/Makefile	2005-04-09 04:10:23.000000000 +0200
+@@ -13,7 +13,7 @@
+ OBJS= main.o 
+ 
+ ifeq ($(BUILD_INSTALL), yes)
+-INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(plugdir)\"
++INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(real_plugdir)\"
+ else
+ INSTALL_FLAGS=
+ endif
+--- gpac/Applications/Osmo4_wx/Makefile.orig	2005-04-09 04:10:42.000000000 +0200
++++ gpac/Applications/Osmo4_wx/Makefile	2005-04-09 04:10:52.000000000 +0200
+@@ -13,7 +13,7 @@
+ OBJS= wxOsmo4.o wxGPACControl.o fileprops.o Playlist.o menubtn.o
+ 
+ ifeq ($(BUILD_INSTALL), yes)
+-INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(plugdir)\"
++INSTALL_FLAGS=-DM4_PLUGIN_PATH=\"$(real_plugdir)\"
+ else
+ INSTALL_FLAGS=
+ endif
