@@ -9,12 +9,13 @@
 %bcond_without	mad
 %bcond_without	png
 %bcond_without	xvid
+%bcond_with	wx
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.2.4
-Release:	0.1
+Release:	0.2
 License:	GPL
 Group:		Applications
 Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -22,9 +23,10 @@ Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
 Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 # Source1-md5:	705f6993fbf890e92eb7a331e7c716d1
 Patch0:		%{name}-install.patch
+Patch1:		%{name}-wxWidgets.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires: 	SDL-devel
-#BuildRequires:	wxWidgets-devel
+%{?with_wx:BuildRequires:	wxGTK2-devel >= 2.5.4}
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
 %{?with_freetype:BuildRequires:	freetype-devel}
@@ -32,6 +34,7 @@ BuildRequires: 	SDL-devel
 %{?with_jpeg:BuildRequires:	libjpeg-devel}
 %{?with_mad:BuildRequires:	libmad-devel}
 %{?with_png:BuildRequires:	libpng-devel}
+BuildRequires:	libxml2-devel
 %{?with_xvid:BuildRequires:	xvid-devel}
 Requires:	SDL
 #Requires:	wxWidgets
@@ -79,6 +82,8 @@ do publikacji w celu dystrybucji materia³ów.
 
 %prep
 %setup -q -n gpac
+%patch0 -p1 
+%{?with_wx:%patch1 -p1}
 %if %{with amr}
 mkdir -p Plugins/amr_dec/AMR_NB
 cd Plugins/amr_dec/AMR_NB
