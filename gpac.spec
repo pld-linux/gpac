@@ -103,10 +103,8 @@ chmod a+x configure
 	%{!?with_js: --disable-js} \
 	%{!?with_mad: --disable-mad} \
 	%{!?with_png: --disable-png} \
-	%ifarch amd64
 	--extra-cflags="-fPIC" \
 	--extra-ldflags="-fPIC" \
-	%endif
 	%{!?with_xvid: --disable-xvid}
 
 %{__make} \
