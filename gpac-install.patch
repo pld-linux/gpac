@@ -20,3 +20,16 @@
  else
  INSTALL_FLAGS=
  endif
+--- gpac/Makefile.orig	2005-01-31 15:41:05.000000000 +0100
++++ gpac/Makefile	2005-04-27 12:33:09.000000000 +0200
+@@ -73,8 +73,8 @@
+ ifeq ($(CONFIG_WIN32),yes)
+ 	install -s -m 755 bin/gcc/libm4systems.dll $(prefix)/lib
+ else
+-	install -s -m 755 bin/gcc/libm4systems.so $(prefix)/lib/libm4systems-$(VERSION).so
+-	ln -sf libm4systems-$(VERSION).so $(prefix)/lib/libm4systems.so
++	install -s -m 755 bin/gcc/libm4systems.so $(libdir)/libm4systems-$(VERSION).so
++	ln -sf libm4systems-$(VERSION).so $(libdir)/libm4systems.so
+ 	ldconfig || true
+ endif
+ 	install -d "$(mandir)/man1"
