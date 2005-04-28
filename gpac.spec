@@ -1,4 +1,6 @@
 #
+# TODO: soname for libm4systems(?)
+#
 # Conditional build:
 %bcond_with	amr
 %bcond_without	faad
@@ -131,5 +133,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS Changelog README TODO
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/*
+%attr(755,root,root) %{_libdir}/lib*.so
+%dir %{_libdir}/gpac
+%attr(755,root,root) %{_libdir}/gpac/*.so
 %{_mandir}/man1/*
