@@ -28,7 +28,7 @@
  else
 -	install -s -m 755 bin/gcc/libm4systems.so $(prefix)/lib/libm4systems-$(VERSION).so
 -	ln -sf libm4systems-$(VERSION).so $(prefix)/lib/libm4systems.so
-+	install -s -m 755 bin/gcc/libm4systems.so $(libdir)/libm4systems-$(VERSION).so
++	install -m 755 bin/gcc/libm4systems.so $(libdir)/libm4systems-$(VERSION).so
 +	ln -sf libm4systems-$(VERSION).so $(libdir)/libm4systems.so
  	ldconfig || true
  endif
