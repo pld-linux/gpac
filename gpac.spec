@@ -114,7 +114,7 @@ unzip -j 26073-530_ANSI_C_source_code.zip
 %endif
 chmod a+x configure
 
-# files for w32 and linux was swapped
+# files for w32 and Linux were swapped
 rm -rf applications/osmozilla/nsIOsmozilla.xpt_linux
 mv applications/osmozilla/nsIOsmozilla.xpt_w32 applications/osmozilla/nsIOsmozilla.xpt_linux
 
@@ -143,9 +143,9 @@ rm -rf $RPM_BUILD_ROOT
 	bindir=$RPM_BUILD_ROOT%{_bindir} \
 	libdir=$RPM_BUILD_ROOT%{_libdir} \
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
-        plugdir=$RPM_BUILD_ROOT%{_libdir}/gpac \
-        real_plugdir=%{_libdir}/gpac \
-        prefix=$RPM_BUILD_ROOT/usr \
+	plugdir=$RPM_BUILD_ROOT%{_libdir}/gpac \
+	real_plugdir=%{_libdir}/gpac \
+	prefix=$RPM_BUILD_ROOT/usr \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_plugindir}
 
 %clean
@@ -163,21 +163,21 @@ rm -rf $RPM_BUILD_ROOT
 %triggerin -n browser-plugin-%{name} -- mozilla
 %nsplugin_install -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
 if [ -d /usr/%{_lib}/mozilla ]; then
-        umask 022
-        rm -f /usr/%{_lib}/mozilla/components/{compreg,xpti}.dat
-        if [ -x /usr/bin/regxpcom ]; then
-                MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
-        fi
+	umask 022
+	rm -f /usr/%{_lib}/mozilla/components/{compreg,xpti}.dat
+	if [ -x /usr/bin/regxpcom ]; then
+		MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
+	fi
 fi
 
 %triggerun -n browser-plugin-%{name} -- mozilla
 %nsplugin_uninstall -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
 if [ -d /usr/%{_lib}/mozilla ]; then
-        umask 022
-        rm -f /usr/%{_lib}/mozilla/components/{compreg,xpti}.dat
-        if [ -x /usr/bin/regxpcom ]; then
-                MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
-        fi
+	umask 022
+	rm -f /usr/%{_lib}/mozilla/components/{compreg,xpti}.dat
+	if [ -x /usr/bin/regxpcom ]; then
+		MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
+	fi
 fi
 
 %triggerpostun -n browser-plugin-%{name} -- mozilla-plugin-%{name}
@@ -195,4 +195,4 @@ fi
 %files -n browser-plugin-%{name}
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_plugindir}/nposmozilla.so
-%attr(755,root,root) %{_plugindir}/nposmozilla.xpt
+%{_plugindir}/nposmozilla.xpt
