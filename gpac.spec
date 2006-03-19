@@ -16,12 +16,12 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.2.4
-Release:	3
-License:	GPL
+Version:	0.4.0
+Release:	1
+License:	LGPL
 Group:		Applications
 Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
-# Source0-md5:	cbbea28e99c23d1839d38c54c2cc090a
+# Source0-md5:	a8b4b3206cabda946850240f1e7aea93
 Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 # Source1-md5:	705f6993fbf890e92eb7a331e7c716d1
 Patch0:		%{name}-install.patch
@@ -50,6 +50,7 @@ Requires:	SDL
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         _noautoreq   libm4systems.so
+%define         _plugindir      %{_libdir}/browser-plugins
 
 %description
 GPAC is an implementation of the MPEG-4 Systems standard (ISO/IEC
@@ -81,6 +82,25 @@ DSP) z prostym celem: wymagaæ tak ma³o pamiêci, jak to tylko mo¿liwe.
 Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzêdzia
 do publikacji w celu dystrybucji materia³ów.
 
+%package -n browser-plugin-%{name}
+Summary:	GPAC browser plugin
+Summary(pl):	Wtyczka GPAC do przegl±derek WWW
+Group:		X11/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	browser-plugins(%{_target_cpu})
+
+%define browsers mozilla, mozilla-firefox
+
+%description -n browser-plugin-%{name}
+GPAC plugin for Netscape-compatible WWW browsers.
+
+Supported browsers: %{browsers}.
+
+%description -n browser-plugin-%{name} -l pl
+Wtyczka GPAC dla przegl±darek WWW zgodnych z Netscape.
+
+Obs³ugiwane przegl±darki: %{browsers}.
+
 %prep
 %setup -q -n gpac
 %patch0 -p1 
@@ -93,6 +113,10 @@ unzip -j %{_sourcedir}/26073-530.zip
 unzip -j 26073-530_ANSI_C_source_code.zip
 %endif
 chmod a+x configure
+
+# files for w32 and linux was swapped
+rm -rf applications/osmozilla/nsIOsmozilla.xpt_linux
+mv applications/osmozilla/nsIOsmozilla.xpt_w32 applications/osmozilla/nsIOsmozilla.xpt_linux
 
 %build
 %configure \
@@ -121,13 +145,43 @@ rm -rf $RPM_BUILD_ROOT
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
         plugdir=$RPM_BUILD_ROOT%{_libdir}/gpac \
         real_plugdir=%{_libdir}/gpac \
-        prefix=$RPM_BUILD_ROOT/usr
+        prefix=$RPM_BUILD_ROOT/usr \
+	MOZILLA_DIR=$RPM_BUILD_ROOT%{_plugindir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun -p /sbin/ldconfig
+
+%triggerin -n browser-plugin-%{name} -- mozilla-firefox
+%nsplugin_install -d %{_libdir}/mozilla-firefox/plugins nposmozilla.so nposmozilla.xpt
+
+%triggerun -n browser-plugin-%{name} -- mozilla-firefox
+%nsplugin_uninstall -d %{_libdir}/mozilla-firefox/plugins nposmozilla.so nposmozilla.xpt
+
+%triggerin -n browser-plugin-%{name} -- mozilla
+%nsplugin_install -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
+if [ -d /usr/%{_lib}/mozilla ]; then
+        umask 022
+        rm -f /usr/%{_lib}/mozilla/components/{compreg,xpti}.dat
+        if [ -x /usr/bin/regxpcom ]; then
+                MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
+        fi
+fi
+
+%triggerun -n browser-plugin-%{name} -- mozilla
+%nsplugin_uninstall -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
+if [ -d /usr/%{_lib}/mozilla ]; then
+        umask 022
+        rm -f /usr/%{_lib}/mozilla/components/{compreg,xpti}.dat
+        if [ -x /usr/bin/regxpcom ]; then
+                MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
+        fi
+fi
+
+%triggerpostun -n browser-plugin-%{name} -- mozilla-plugin-%{name}
+%nsplugin_install -f -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
 
 %files
 %defattr(644,root,root,755)
@@ -137,3 +191,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/*.so
 %{_mandir}/man1/*
+
+%files -n browser-plugin-%{name}
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_plugindir}/nposmozilla.so
+%attr(755,root,root) %{_plugindir}/nposmozilla.xpt
