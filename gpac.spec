@@ -28,8 +28,7 @@ Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 Patch0:		%{name}-install.patch
 Patch1:		%{name}-wxWidgets.patch
 URL:		http://gpac.sourceforge.net/
-BuildRequires: 	SDL-devel
-%{?with_wx:BuildRequires:	wxGTK2-devel >= 2.5.4}
+BuildRequires:	SDL-devel
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
 %{?with_freetype:BuildRequires:	freetype-devel}
@@ -38,6 +37,8 @@ BuildRequires: 	SDL-devel
 %{?with_mad:BuildRequires:	libmad-devel}
 %{?with_png:BuildRequires:	libpng-devel}
 BuildRequires:	libxml2-devel
+BuildRequires:	rpmbuild(macros) >= 1.236
+%{?with_wx:BuildRequires:	wxGTK2-devel >= 2.5.4}
 %{?with_xvid:BuildRequires:	xvid-devel}
 Requires:	SDL
 %{?with_faad:Requires:	faad2}
@@ -45,8 +46,8 @@ Requires:	SDL
 %{?with_freetype:Requires:	freetype}
 %{?with_js:Requires:	js}
 %{?with_jpeg:Requires:	libjpeg}
-%{?with_png:Requires:	libpng}
 %{?with_mad:Requires:	libmad}
+%{?with_png:Requires:	libpng}
 %{?with_xvid:Requires:	xvid}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -103,8 +104,8 @@ Wtyczka GPAC dla przegl±darek WWW zgodnych z Netscape.
 Obs³ugiwane przegl±darki: %{browsers}.
 
 %prep
-%setup -q -n gpac
-%patch0 -p1 
+%setup -q -n %{name}
+%patch0 -p1
 %{?with_wx:%patch1 -p1}
 %if %{with amr}
 mkdir -p Plugins/amr_dec/AMR_NB
@@ -120,18 +121,18 @@ mv applications/osmozilla/nsIOsmozilla.xpt_w32 applications/osmozilla/nsIOsmozil
 
 %build
 %configure \
-	--enable-oss-audio \
-	%{?with_amr: --enable-amr-nb} \
-	%{!?with_faad: --disable-faad} \
-	%{!?with_ffmpeg: --disable-ffmpeg} \
-	%{!?with_freetype: --disable-ft} \
-	%{!?with_jpeg: --disable-jpeg} \
-	%{!?with_js: --disable-js} \
-	%{!?with_mad: --disable-mad} \
-	%{!?with_png: --disable-png} \
 	--extra-cflags="-fPIC" \
 	--extra-ldflags="-fPIC" \
-	%{!?with_xvid: --disable-xvid}
+	--enable-oss-audio \
+	%{?with_amr:--enable-amr-nb} \
+	%{!?with_faad:--disable-faad} \
+	%{!?with_ffmpeg:--disable-ffmpeg} \
+	%{!?with_freetype:--disable-ft} \
+	%{!?with_jpeg:--disable-jpeg} \
+	%{!?with_js:--disable-js} \
+	%{!?with_mad:--disable-mad} \
+	%{!?with_png:--disable-png} \
+	%{!?with_xvid:--disable-xvid}
 
 %{__make} \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -145,7 +146,7 @@ rm -rf $RPM_BUILD_ROOT
 	mandir=$RPM_BUILD_ROOT%{_mandir} \
 	plugdir=$RPM_BUILD_ROOT%{_libdir}/gpac \
 	real_plugdir=%{_libdir}/gpac \
-	prefix=$RPM_BUILD_ROOT/usr \
+	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_plugindir}
 
 %clean
@@ -179,9 +180,6 @@ if [ -d /usr/%{_lib}/mozilla ]; then
 		MOZILLA_FIVE_HOME=/usr/%{_lib}/mozilla /usr/bin/regxpcom
 	fi
 fi
-
-%triggerpostun -n browser-plugin-%{name} -- mozilla-plugin-%{name}
-%nsplugin_install -f -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
 
 %files
 %defattr(644,root,root,755)
