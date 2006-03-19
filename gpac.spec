@@ -1,5 +1,6 @@
 #
 # TODO: soname for libm4systems(?)
+# - use system mozilla includes
 #
 # Conditional build:
 %bcond_with	amr
