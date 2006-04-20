@@ -112,6 +112,7 @@ mkdir -p Plugins/amr_dec/AMR_NB
 cd Plugins/amr_dec/AMR_NB
 unzip -j %{SOURCE1}
 unzip -j 26073-530_ANSI_C_source_code.zip
+cd ../../..
 %endif
 chmod a+x configure
 
