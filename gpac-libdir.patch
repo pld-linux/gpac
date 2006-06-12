@@ -1,0 +1,12 @@
+diff -ur gpac.orig/modules/x11_out/Makefile gpac/modules/x11_out/Makefile
+--- gpac.orig/modules/x11_out/Makefile	2005-07-23 19:59:28.000000000 +0200
++++ gpac/modules/x11_out/Makefile	2006-06-12 19:46:27.925630000 +0200
+@@ -23,7 +23,7 @@
+ 
+ 
+ $(LIB): $(OBJS)
+-	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) -L/usr/X11R6/lib -lX11 -lXext -lGL -L../../bin/gcc -lgpac
++	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(XLIBDIR) -lX11 -lXext -lGL -L../../bin/gcc -lgpac
+ 
+ %.o: %.c
+ 	$(CC) $(CFLAGS) -c -o $@ $< 
