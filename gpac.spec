@@ -28,6 +28,7 @@ Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 Patch0:		%{name}-install.patch
 Patch1:		%{name}-wxWidgets.patch
 Patch2:		%{name}-amd64.patch
+Patch3:		%{name}-libdir.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
 %{?with_faad:BuildRequires:	faad2-devel}
@@ -109,6 +110,7 @@ Obs³ugiwane przegl±darki: %{browsers}.
 %patch0 -p1
 %{?with_wx:%patch1 -p1}
 %patch2 -p1
+%patch3 -p1
 %if %{with amr}
 mkdir -p Plugins/amr_dec/AMR_NB
 cd Plugins/amr_dec/AMR_NB
@@ -138,6 +140,7 @@ mv applications/osmozilla/nsIOsmozilla.xpt_w32 applications/osmozilla/nsIOsmozil
 	%{!?with_xvid:--disable-xvid}
 
 %{__make} \
+	XLIBDIR="/usr/X11R6/%{_lib}" \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %install
