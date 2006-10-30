@@ -18,7 +18,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.0
-Release:	2
+Release:	3
 License:	LGPL
 Group:		Applications
 Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -166,6 +166,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %triggerun -n browser-plugin-%{name} -- mozilla-firefox
 %nsplugin_uninstall -d %{_libdir}/mozilla-firefox/plugins nposmozilla.so nposmozilla.xpt
+
+%triggerin -n browser-plugin-%{name} -- mozilla-firefox-bin
+%nsplugin_install -d %{_libdir}/mozilla-firefox-bin/plugins nposmozilla.so nposmozilla.xpt
+
+%triggerun -n browser-plugin-%{name} -- mozilla-firefox-bin
+%nsplugin_uninstall -d %{_libdir}/mozilla-firefox-bin/plugins nposmozilla.so nposmozilla.xpt
 
 %triggerin -n browser-plugin-%{name} -- mozilla
 %nsplugin_install -d %{_libdir}/mozilla/plugins nposmozilla.so nposmozilla.xpt
