@@ -1,6 +1,9 @@
-#
 # TODO: soname for libm4systems(?)
 # - use system mozilla includes
+# - ./configure[692]: wx-config: not found
+# - ./configure[693]: wx-config: not found
+# - CC, CFLAGS
+# - Xiph Theora: no
 #
 # Conditional build:
 %bcond_with	amr
@@ -139,7 +142,7 @@ mv applications/osmozilla/nsIOsmozilla.xpt_w32 applications/osmozilla/nsIOsmozil
 	%{!?with_png:--disable-png} \
 	%{!?with_xvid:--disable-xvid}
 
-%{__make} \
+%{__make} -j1 \
 	XLIBDIR="/usr/X11R6/%{_lib}" \
 	DESTDIR=$RPM_BUILD_ROOT
 
