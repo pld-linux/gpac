@@ -19,7 +19,7 @@
 %bcond_with	wx
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
-Summary(pl):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
+Summary(pl.UTF-8):   GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.0
 Release:	4
@@ -74,24 +74,24 @@ keep the memory footprint as low as possible. The project will at term
 provide player(s), systems encoders and publishing tools for content
 distribution.
 
-%description -l pl
+%description -l pl.UTF-8
 GPAC to implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 stworzona od zera w ANSI C.
 
-G³ównym celem tworzenia jej jest dostarczenie czystej (tzn. czytelnej
-dla jak najwiêkszej liczby ludzi), ma³ej i elastycznej alternatywy dla
+GÅ‚Ã³wnym celem tworzenia jej jest dostarczenie czystej (tzn. czytelnej
+dla jak najwiÄ™kszej liczby ludzi), maÅ‚ej i elastycznej alternatywy dla
 wzorcowego oprogramowania MPEG-4 Systems (znanego jako IM1 i
 rozprowadzanego w ISO/IEC 14496-5). Wzorcowe oprogramowanie MPEG-4
-jest bardzo du¿± porcj± kodu, zaprojektowan± raczej do zweryfikowania
-standardu ni¿ dostarczenia ma³ej, stabilnej wersji produkcyjnej. GPAC
-jest pisany w ANSI C ze wzglêdu na przeno¶no¶æ (platformy wbudowane i
-DSP) z prostym celem: wymagaæ tak ma³o pamiêci, jak to tylko mo¿liwe.
-Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzêdzia
-do publikacji w celu dystrybucji materia³ów.
+jest bardzo duÅ¼Ä… porcjÄ… kodu, zaprojektowanÄ… raczej do zweryfikowania
+standardu niÅ¼ dostarczenia maÅ‚ej, stabilnej wersji produkcyjnej. GPAC
+jest pisany w ANSI C ze wzglÄ™du na przenoÅ›noÅ›Ä‡ (platformy wbudowane i
+DSP) z prostym celem: wymagaÄ‡ tak maÅ‚o pamiÄ™ci, jak to tylko moÅ¼liwe.
+Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzÄ™dzia
+do publikacji w celu dystrybucji materiaÅ‚Ã³w.
 
 %package -n browser-plugin-%{name}
 Summary:	GPAC browser plugin
-Summary(pl):	Wtyczka GPAC do przegl±derek WWW
+Summary(pl.UTF-8):   Wtyczka GPAC do przeglÄ…derek WWW
 Group:		X11/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	browser-plugins >= 2.0
@@ -100,8 +100,8 @@ Requires:	browser-plugins(%{_target_base_arch})
 %description -n browser-plugin-%{name}
 GPAC plugin for Netscape-compatible WWW browsers.
 
-%description -n browser-plugin-%{name} -l pl
-Wtyczka GPAC dla przegl±darek WWW zgodnych z Netscape.
+%description -n browser-plugin-%{name} -l pl.UTF-8
+Wtyczka GPAC dla przeglÄ…darek WWW zgodnych z Netscape.
 
 %prep
 %setup -q -n %{name}
