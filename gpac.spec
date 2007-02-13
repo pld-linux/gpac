@@ -19,7 +19,7 @@
 %bcond_with	wx
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
-Summary(pl.UTF-8):   GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
+Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.0
 Release:	4
@@ -91,7 +91,7 @@ do publikacji w celu dystrybucji materiałów.
 
 %package -n browser-plugin-%{name}
 Summary:	GPAC browser plugin
-Summary(pl.UTF-8):   Wtyczka GPAC do przegląderek WWW
+Summary(pl.UTF-8):	Wtyczka GPAC do przegląderek WWW
 Group:		X11/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	browser-plugins >= 2.0
