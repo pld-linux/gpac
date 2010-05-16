@@ -44,6 +44,7 @@ BuildRequires:	SDL-devel
 %{?with_png:BuildRequires:	libpng-devel}
 BuildRequires:	libxml2-devel
 BuildRequires:	rpmbuild(macros) >= 1.357
+BuildRequires:	unzip
 %{?with_wx:BuildRequires:	wxGTK2-devel >= 2.5.4}
 %{?with_xvid:BuildRequires:	xvid-devel}
 Requires:	SDL
