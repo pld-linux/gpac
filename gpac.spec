@@ -1,64 +1,64 @@
 # TODO
-# - soname for libm4systems(?)
-# - use system mozilla includes
-# - ./configure[692]: wx-config: not found
-# - ./configure[693]: wx-config: not found
-# - CC, CFLAGS
-# - Xiph Theora: no
+# - amr-nb/amr-wb/amr-nb-fixed ?
+# - FFMPEG: local
+# - which: no wx-config in ...
 #
 # Conditional build:
-%bcond_with	amr
-%bcond_without	faad
-%bcond_without	ffmpeg
-%bcond_without	freetype
-%bcond_without	jpeg
-%bcond_without	js
-%bcond_without	mad
-%bcond_without	png
-%bcond_without	xvid
-%bcond_with	wx
+%bcond_with	amr		# AMR-NB support
+%bcond_without	faad		# AAC decoding support
+%bcond_without	ffmpeg		# ffmpeg support
+%bcond_without	freetype	# freetype support
+%bcond_without	jpeg		# JPEG support
+%bcond_without	js		# JavaScript support
+%bcond_without	mad		# MP3 support
+%bcond_without	png		# PNG support
+%bcond_without	xvid		# xvid support
+%bcond_with	wx		# wxWidgets support
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.4.0
-Release:	4
-License:	LGPL
-Group:		Applications
-Source0:	http://dl.sourceforge.net/gpac/%{name}-%{version}.tar.gz
-# Source0-md5:	a8b4b3206cabda946850240f1e7aea93
+Version:	0.4.5
+Release:	0.1
+License:	LGPL v2+
+Group:		Applications/Multimedia
+Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
+# Source0-md5:	755e8c438a48ebdb13525dd491f5b0d1
 Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
 # Source1-md5:	705f6993fbf890e92eb7a331e7c716d1
 Patch0:		%{name}-install.patch
 Patch1:		%{name}-wxWidgets.patch
-Patch2:		%{name}-amd64.patch
-Patch3:		%{name}-libdir.patch
+Patch2:		%{name}-libpng.patch
+Patch3:		%{name}-pic.patch
+Patch4:		%{name}-xulrunner.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
+BuildRequires:	a52dec-libs-devel
+BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
 %{?with_freetype:BuildRequires:	freetype-devel}
+BuildRequires:	jack-audio-connection-kit-devel
 %{?with_js:BuildRequires:	js-devel}
 %{?with_jpeg:BuildRequires:	libjpeg-devel}
 %{?with_mad:BuildRequires:	libmad-devel}
+BuildRequires:	libogg-devel
 %{?with_png:BuildRequires:	libpng-devel}
+BuildRequires:	libtheora-devel
+BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
+BuildRequires:	openjpeg-devel
+BuildRequires:	pulseaudio-devel
 BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	unzip
 %{?with_wx:BuildRequires:	wxGTK2-devel >= 2.5.4}
+# -server
+BuildRequires:	xmlrpc-c-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXv-devel
+BuildRequires:	xulrunner-devel >= 1.9.1
 %{?with_xvid:BuildRequires:	xvid-devel}
-Requires:	SDL
-%{?with_faad:Requires:	faad2}
-%{?with_ffmpeg:Requires:	ffmpeg}
-%{?with_freetype:Requires:	freetype}
-%{?with_js:Requires:	js}
-%{?with_jpeg:Requires:	libjpeg}
-%{?with_mad:Requires:	libmad}
-%{?with_png:Requires:	libpng}
-%{?with_xvid:Requires:	xvid}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define         _noautoreq   libm4systems.so
 
 %description
 GPAC is an implementation of the MPEG-4 Systems standard (ISO/IEC
@@ -110,6 +110,8 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %{?with_wx:%patch1 -p1}
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+
 %if %{with amr}
 mkdir -p Plugins/amr_dec/AMR_NB
 cd Plugins/amr_dec/AMR_NB
@@ -119,39 +121,41 @@ cd ../../..
 %endif
 chmod a+x configure
 
-# files for w32 and Linux were swapped
-rm -rf applications/osmozilla/nsIOsmozilla.xpt_linux
-mv applications/osmozilla/nsIOsmozilla.xpt_w32 applications/osmozilla/nsIOsmozilla.xpt_linux
-
 %build
+cd applications/osmozilla
+xpidl -m header -I /usr/share/idl/xulrunner nsIOsmozilla.idl
+xpidl -m typelib -I /usr/share/idl/xulrunner nsIOsmozilla.idl
+cp -f nsIOsmozilla.xpt nsIOsmozilla.xpt_linux
+cd ../..
 %configure \
-	--extra-cflags="-fPIC" \
-	--extra-ldflags="-fPIC" \
-	--enable-oss-audio \
+	--X11-path=/usr \
+	--cc="%{__cc}" \
+	--disable-opt \
 	%{?with_amr:--enable-amr-nb} \
-	%{!?with_faad:--disable-faad} \
-	%{!?with_ffmpeg:--disable-ffmpeg} \
-	%{!?with_freetype:--disable-ft} \
-	%{!?with_jpeg:--disable-jpeg} \
-	%{!?with_js:--disable-js} \
-	%{!?with_mad:--disable-mad} \
-	%{!?with_png:--disable-png} \
-	%{!?with_xvid:--disable-xvid}
+	--enable-joystick \
+	--enable-pic \
+	--extra-cflags="%{rpmcflags}" \
+	--extra-ldflags="%{rpmldflags}" \
+	--mozdir=%{_browserpluginsdir} \
+	%{!?with_faad:--use-faad=no} \
+	%{!?with_ffmpeg:--use-ffmpeg=no} \
+	%{!?with_freetype:--use-ft=no} \
+	%{!?with_jpeg:--use-jpeg=no} \
+	%{!?with_js:--use-js=no} \
+	%{!?with_mad:--use-mad=no} \
+	%{!?with_png:--use-png=no} \
+	%{!?with_xvid:--use-xvid=no} \
+	--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"
 
 %{__make} -j1 \
-	XLIBDIR="/usr/X11R6/%{_lib}" \
-	DESTDIR=$RPM_BUILD_ROOT
+	libdir=%{_lib}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	bindir=$RPM_BUILD_ROOT%{_bindir} \
-	libdir=$RPM_BUILD_ROOT%{_libdir} \
-	mandir=$RPM_BUILD_ROOT%{_mandir} \
-	plugdir=$RPM_BUILD_ROOT%{_libdir}/gpac \
-	real_plugdir=%{_libdir}/gpac \
-	prefix=$RPM_BUILD_ROOT%{_prefix} \
+	DESTDIR=$RPM_BUILD_ROOT \
+	libdir=%{_lib} \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_browserpluginsdir}
 
 %clean
@@ -171,11 +175,16 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS Changelog README TODO
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/lib*.so
+%attr(755,root,root) %{_bindir}/MP4Box
+%attr(755,root,root) %{_bindir}/MP4Client
+%attr(755,root,root) %{_libdir}/libgpac-%{version}.so
+%attr(755,root,root) %{_libdir}/libgpac.so
 %dir %{_libdir}/gpac
-%attr(755,root,root) %{_libdir}/gpac/*.so
-%{_mandir}/man1/*
+%attr(755,root,root) %{_libdir}/gpac/gm_*.so
+%{_datadir}/gpac
+%{_mandir}/man1/gpac.1*
+%{_mandir}/man1/mp4box.1*
+%{_mandir}/man1/mp4client.1*
 
 %files -n browser-plugin-%{name}
 %defattr(644,root,root,755)
