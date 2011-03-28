@@ -1,10 +1,8 @@
 # TODO
-# - amr-nb/amr-wb/amr-nb-fixed ?
 # - FFMPEG: local
-# - which: no wx-config in ...
 #
 # Conditional build:
-%bcond_with	amr		# AMR-NB support
+%bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
 %bcond_without	faad		# AAC decoding support
 %bcond_without	ffmpeg		# ffmpeg support
 %bcond_without	freetype	# freetype support
@@ -13,28 +11,28 @@
 %bcond_without	mad		# MP3 support
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
-%bcond_with	wx		# wxWidgets support
+%bcond_without	wx		# wxWidgets support
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.5
-Release:	0.1
+Release:	0.2
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
 # Source0-md5:	755e8c438a48ebdb13525dd491f5b0d1
-Source1:	http://www.3gpp.org/ftp/Specs/archive/26_series/26.073/26073-530.zip
-# Source1-md5:	705f6993fbf890e92eb7a331e7c716d1
 Patch0:		%{name}-install.patch
-Patch1:		%{name}-wxWidgets.patch
-Patch2:		%{name}-libpng.patch
-Patch3:		%{name}-pic.patch
-Patch4:		%{name}-xulrunner.patch
+Patch1:		%{name}-libpng.patch
+Patch2:		%{name}-pic.patch
+Patch3:		%{name}-xulrunner.patch
+Patch4:		%{name}-amr.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9
+%{?with_amr:BuildRequires:	amrnb-devel}
+%{?with_amr:BuildRequires:	amrwb-devel}
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel}
 %{?with_freetype:BuildRequires:	freetype-devel}
@@ -50,8 +48,9 @@ BuildRequires:	libxml2-devel
 BuildRequires:	openjpeg-devel
 BuildRequires:	pulseaudio-devel
 BuildRequires:	rpmbuild(macros) >= 1.357
+BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
-%{?with_wx:BuildRequires:	wxGTK2-devel >= 2.5.4}
+%{?with_wx:BuildRequires:	wxGTK2-devel >= 2.6.0}
 # -server
 BuildRequires:	xmlrpc-c-devel
 BuildRequires:	xorg-lib-libXext-devel
@@ -90,6 +89,18 @@ DSP) z prostym celem: wymagać tak mało pamięci, jak to tylko możliwe.
 Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzędzia
 do publikacji w celu dystrybucji materiałów.
 
+%package gui
+Summary:	wxWidgets-based GUI for GPAC
+Summary(pl.UTF-8):	Oparty na wxWidgets graficzny interfejs do GPAC
+Group:		X11/Applications/Multimedia
+Requires:	%{name} = %{version}-%{release}
+
+%description gui
+Osmo4 - wxWidgets-based GUI for GPAC.
+
+%description gui -l pl.UTF-8
+Osmo4 - oparty na wxWidgets graficzny interfejs do GPAC.
+
 %package -n browser-plugin-%{name}
 Summary:	GPAC browser plugin
 Summary(pl.UTF-8):	Wtyczka GPAC do przegląderek WWW
@@ -107,18 +118,15 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %prep
 %setup -q -n %{name}
 %patch0 -p1
-%{?with_wx:%patch1 -p1}
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 
 %if %{with amr}
-mkdir -p Plugins/amr_dec/AMR_NB
-cd Plugins/amr_dec/AMR_NB
-unzip -j %{SOURCE1}
-unzip -j 26073-530_ANSI_C_source_code.zip
-cd ../../..
+sed -i -e 's/amr_\([nw]b\)_ft/amr\1/' modules/amr_float_dec/amr_float_dec.c
 %endif
+sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure
 
 %build
@@ -131,7 +139,8 @@ cd ../..
 	--X11-path=/usr \
 	--cc="%{__cc}" \
 	--disable-opt \
-	%{?with_amr:--enable-amr-nb} \
+	%{!?with_wx:--disable-wx} \
+	%{?with_amr:--enable-amr} \
 	--enable-joystick \
 	--enable-pic \
 	--extra-cflags="%{rpmcflags}" \
@@ -185,6 +194,10 @@ fi
 %{_mandir}/man1/gpac.1*
 %{_mandir}/man1/mp4box.1*
 %{_mandir}/man1/mp4client.1*
+
+%files gui
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/Osmo4
 
 %files -n browser-plugin-%{name}
 %defattr(644,root,root,755)
