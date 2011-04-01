@@ -15,7 +15,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.5
-Release:	0.3
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -26,6 +26,7 @@ Patch2:		%{name}-pic.patch
 Patch3:		%{name}-xulrunner.patch
 Patch4:		%{name}-amr.patch
 Patch5:		%{name}-ffmpeg.patch
+Patch6:		%{name}-install-is-not-clean.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -122,6 +123,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %if %{with amr}
 sed -i -e 's/amr_\([nw]b\)_ft/amr\1/' modules/amr_float_dec/amr_float_dec.c
@@ -157,6 +159,8 @@ cd ../..
 	--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"
 
 %{__make} -j1 \
+	BUILD_INSTALL=yes \
+	CXX="%{__cxx}" \
 	libdir=%{_lib}
 
 %install

@@ -1,0 +1,21 @@
+--- gpac/applications/mp4client/Makefile.orig	2008-11-24 09:44:26.000000000 +0100
++++ gpac/applications/mp4client/Makefile	2011-04-01 18:56:48.041739787 +0200
+@@ -87,7 +87,7 @@ MP4Client$(EXE): $(OBJS)
+ clean: 
+ 	rm -f $(OBJS) ../../bin/gcc/$(PROG)
+ 
+-install: clean
++install:
+ 	$(MAKE) -override BUILD_INSTALL=yes all
+ 	install -m 755 $(INSTFLAGS) ../../bin/gcc/MP4Client "$(DESTDIR)$(prefix)/bin"
+ 
+--- gpac/applications/osmo4_wx/Makefile.orig	2008-11-24 09:48:32.000000000 +0100
++++ gpac/applications/osmo4_wx/Makefile	2011-04-01 18:57:49.669735597 +0200
+@@ -63,7 +63,6 @@ ifeq ($(CONFIG_DARWIN),yes)
+ 	      $(DESTDIR)$(mac_apps)/Osmo4.app/Contents/MacOS
+ 	echo -n 'APPLOsm4' > $(DESTDIR)$(mac_apps)/Osmo4.app/Contents/PkgInfo
+ else
+-	rm -f wxOsmo4.o
+ 	$(MAKE) -override BUILD_INSTALL=yes all
+ 	mkdir -p $(DESTDIR)$(prefix)/bin
+ 	install -m 755 $(INSTFLAGS) ../../bin/gcc/Osmo4 "$(DESTDIR)$(prefix)/bin"
