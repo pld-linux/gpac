@@ -222,3 +222,13 @@
 -  CallNPN_ForceRedrawProc(NPNFuncs.forceredraw, instance);
 +  (*NPNFuncs.forceredraw)(instance);
  }
+--- gpac/configure.orig	2011-05-29 21:09:10.138301981 +0200
++++ gpac/configure	2011-05-29 21:27:39.248339117 +0200
+@@ -1145,6 +1145,7 @@
+ 
+ #look for GECKO support
+ cat > $TMPCPP << EOF
++#include <mozilla-config.h>
+ #include <nsIServiceManager.h>
+ int main( void ) { return 0; }
+ EOF

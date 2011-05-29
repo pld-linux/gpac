@@ -1,0 +1,22 @@
+--- gpac/configure.orig	2011-05-29 20:37:20.841571383 +0200
++++ gpac/configure	2011-05-29 20:50:56.841598707 +0200
+@@ -102,7 +102,7 @@
+ bigendian="no"
+ SHFLAGS=-shared
+ need_inet_aton="no"
+-LDFLAGS="$LDFLAGS -Wl --warn-common"
++LDFLAGS="$LDFLAGS -Wl,--warn-common"
+ CFLAGS=""
+ CPPFLAGS=""
+ GPAC_SH_FLAGS=-lpthread
+--- gpac/applications/osmo4_wx/Makefile.orig	2011-05-29 20:52:03.848267616 +0200
++++ gpac/applications/osmo4_wx/Makefile	2011-05-29 21:08:38.408300918 +0200
+@@ -41,7 +41,7 @@
+ all: $(PROG)
+ 
+ Osmo4$(EXE): $(OBJS)
+-	$(CC) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) -L../../bin/gcc -lgpac $(WX_LFLAGS) -lz
++	$(CXX) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) -L../../bin/gcc -lgpac $(WX_LFLAGS) `pkg-config --libs gtk+-2.0` -lz
+ 
+ %.o: %.cpp
+ 	$(CXX) $(CFLAGS) $(INSTALL_FLAGS) $(WX_CFLAGS) -c -o $@ $< 

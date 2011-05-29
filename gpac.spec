@@ -27,6 +27,7 @@ Patch3:		%{name}-xulrunner.patch
 Patch4:		%{name}-amr.patch
 Patch5:		%{name}-ffmpeg.patch
 Patch6:		%{name}-install-is-not-clean.patch
+Patch7:		%{name}-flags.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -51,8 +52,7 @@ BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
 %{?with_wx:BuildRequires:	wxGTK2-devel >= 2.6.0}
-# -server
-BuildRequires:	xmlrpc-c-devel
+BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xulrunner-devel >= 1.9.1
@@ -124,6 +124,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %if %{with amr}
 sed -i -e 's/amr_\([nw]b\)_ft/amr\1/' modules/amr_float_dec/amr_float_dec.c
