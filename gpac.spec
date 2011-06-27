@@ -15,7 +15,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.5
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -28,6 +28,7 @@ Patch4:		%{name}-amr.patch
 Patch5:		%{name}-ffmpeg.patch
 Patch6:		%{name}-install-is-not-clean.patch
 Patch7:		%{name}-flags.patch
+Patch8:		%{name}-ffmpeg-0.8.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -35,7 +36,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_amr:BuildRequires:	amrnb-devel}
 %{?with_amr:BuildRequires:	amrwb-devel}
 %{?with_faad:BuildRequires:	faad2-devel}
-%{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.6}
+%{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.8}
 %{?with_freetype:BuildRequires:	freetype-devel}
 BuildRequires:	jack-audio-connection-kit-devel
 %{?with_js:BuildRequires:	js-devel}
@@ -89,6 +90,18 @@ DSP) z prostym celem: wymagać tak mało pamięci, jak to tylko możliwe.
 Projekt docelowo dostarczy odtwarzacz(e), kodery systemowe i narzędzia
 do publikacji w celu dystrybucji materiałów.
 
+%package devel
+Summary:	Header files for GPAC library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GPAC
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description devel
+Header files for GPAC library.
+
+%description devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki GPAC.
+
 %package gui
 Summary:	wxWidgets-based GUI for GPAC
 Summary(pl.UTF-8):	Oparty na wxWidgets graficzny interfejs do GPAC
@@ -125,6 +138,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %if %{with amr}
 sed -i -e 's/amr_\([nw]b\)_ft/amr\1/' modules/amr_float_dec/amr_float_dec.c
@@ -172,6 +186,9 @@ rm -rf $RPM_BUILD_ROOT
 	libdir=%{_lib} \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_browserpluginsdir}
 
+install -d $RPM_BUILD_ROOT%{_includedir}
+cp -a include/gpac $RPM_BUILD_ROOT%{_includedir}/gpac
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -192,13 +209,17 @@ fi
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
 %attr(755,root,root) %{_libdir}/libgpac-%{version}.so
-%attr(755,root,root) %{_libdir}/libgpac.so
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac
 %{_mandir}/man1/gpac.1*
 %{_mandir}/man1/mp4box.1*
 %{_mandir}/man1/mp4client.1*
+
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/gpac
 
 %files gui
 %defattr(644,root,root,755)
