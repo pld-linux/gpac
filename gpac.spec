@@ -15,7 +15,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.4.5
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -36,7 +36,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_amr:BuildRequires:	amrnb-devel}
 %{?with_amr:BuildRequires:	amrwb-devel}
 %{?with_faad:BuildRequires:	faad2-devel}
-%{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.8}
+%{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.6}
 %{?with_freetype:BuildRequires:	freetype-devel}
 BuildRequires:	jack-audio-connection-kit-devel
 %{?with_js:BuildRequires:	js-devel}
@@ -175,7 +175,7 @@ cd ../..
 
 %{__make} -j1 \
 	BUILD_INSTALL=yes \
-	CXX="%{__cxx}" \
+	CXX="%{__cxx} -fPIC" \
 	libdir=%{_lib}
 
 %install
