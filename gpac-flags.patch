@@ -20,3 +20,52 @@
  
  %.o: %.cpp
  	$(CXX) $(CFLAGS) $(INSTALL_FLAGS) $(WX_CFLAGS) -c -o $@ $< 
+--- gpac/src/Makefile~	2011-07-24 16:46:39.000000000 +0200
++++ gpac/src/Makefile	2011-07-24 16:53:33.607729885 +0200
+@@ -106,14 +106,6 @@
+ endif
+ 
+ 
+-ifneq ($(prefix), /usr/local)
+-EXTRALIBS+=-L$(prefix)/lib
+-else
+-ifneq ($(prefix), /usr)
+-EXTRALIBS+=-L$(prefix)/lib
+-endif
+-endif
+-
+ ## libgpac compositor compilation options
+ COMPOSITOR_CFLAGS=
+ ## SVG disabled
+--- gpac/applications/mp4client/Makefile~	2011-07-24 16:54:03.000000000 +0200
++++ gpac/applications/mp4client/Makefile	2011-07-24 16:57:28.613989434 +0200
+@@ -37,18 +37,6 @@
+ PROG=MP4Client
+ endif
+ 
+-ifneq ($(CONFIG_JPEG), no)
+-LINKLIBS+= -L$(prefix)/lib
+-else
+-ifneq ($(CONFIG_PNG), no)
+-LINKLIBS+= -L$(prefix)/lib
+-else
+-ifneq ($(TRISCOPE_MODE), no)
+-LINKLIBS+= -L$(prefix)/lib
+-endif
+-endif
+-endif
+-
+ ifeq ($(CONFIG_JPEG), no)
+ else
+ LINKLIBS+= -ljpeg
+--- gpac/modules/jack/Makefile~	2008-11-24 10:14:19.000000000 +0100
++++ gpac/modules/jack/Makefile	2011-07-24 17:01:53.625253667 +0200
+@@ -32,7 +32,7 @@
+ all: $(LIB)
+ 
+ $(LIB): $(OBJSPIC)
+-	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJSPIC) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib  -ljack
++	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJSPIC) $(EXTRALIBS) -L../../bin/gcc -lgpac -ljack
+ 
+ 
+ %.o: %.c
