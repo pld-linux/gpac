@@ -221,9 +221,11 @@ fi
 %defattr(644,root,root,755)
 %{_includedir}/gpac
 
+%if %{with wx}
 %files gui
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/Osmo4
+%endif
 
 %files -n browser-plugin-%{name}
 %defattr(644,root,root,755)
