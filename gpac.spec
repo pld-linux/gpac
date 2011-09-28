@@ -53,6 +53,7 @@ BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
 %{?with_wx:BuildRequires:	wxGTK2-devel >= 2.6.0}
+%{?with_wx:BuildRequires:	wxGTK2-unicode-devel >= 2.6.0}
 BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
