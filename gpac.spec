@@ -29,6 +29,7 @@ Patch5:		%{name}-ffmpeg.patch
 Patch6:		%{name}-install-is-not-clean.patch
 Patch7:		%{name}-flags.patch
 Patch8:		%{name}-ffmpeg-0.8.patch
+Patch9:		%{name}-idl_uuid.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -56,7 +57,7 @@ BuildRequires:	unzip
 BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
-BuildRequires:	xulrunner-devel >= 1.9.1
+BuildRequires:	xulrunner-devel >= 2:9.0.0
 %{?with_xvid:BuildRequires:	xvid-devel}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -139,6 +140,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %if %{with amr}
 sed -i -e 's/amr_\([nw]b\)_ft/amr\1/' modules/amr_float_dec/amr_float_dec.c
@@ -148,8 +150,8 @@ chmod a+x configure
 
 %build
 cd applications/osmozilla
-xpidl -m header -I /usr/share/idl/xulrunner nsIOsmozilla.idl
-xpidl -m typelib -I /usr/share/idl/xulrunner nsIOsmozilla.idl
+/usr/lib/xulrunner-sdk/sdk/bin/header.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.h nsIOsmozilla.idl
+/usr/lib/xulrunner-sdk/sdk/bin/typelib.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.xpt nsIOsmozilla.idl
 cp -f nsIOsmozilla.xpt nsIOsmozilla.xpt_linux
 cd ../..
 %configure \
