@@ -24,7 +24,7 @@
  // global to get plugins name & description
  NPError NS_PluginGetValue(NPPVariable aVariable, void *aValue);
 -char* NPP_GetMIMEDescription(void);
-+NPP_GET_MIME_CONST char* NPP_GetMIMEDescription(void);
++const char* NPP_GetMIMEDescription(void);
 
 
  //#define NO_GPAC
@@ -248,7 +248,7 @@
  
  
 -char* NPP_GetMIMEDescription(void)
-+NPP_GET_MIME_CONST char* NPP_GetMIMEDescription(void)
++const char* NPP_GetMIMEDescription(void)
  {
  	return GPAC_PLUGIN_MIMETYPES;
  }
