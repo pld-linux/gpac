@@ -252,3 +252,14 @@
  {
  	return GPAC_PLUGIN_MIMETYPES;
  }
+--- gpac/applications/osmozilla/np_entry.cpp~	2005-07-13 16:34:30.000000000 +0200
++++ gpac/applications/osmozilla/np_entry.cpp	2012-01-22 17:43:44.464387379 +0100
+@@ -172,7 +172,7 @@
+   return NS_PluginInitialize();
+ }
+ 
+-char * NP_GetMIMEDescription(void)
++const char * NP_GetMIMEDescription(void)
+ {
+ 	return NPP_GetMIMEDescription();
+ }
