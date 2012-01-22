@@ -150,8 +150,8 @@ chmod a+x configure
 
 %build
 cd applications/osmozilla
-/usr/lib/xulrunner-sdk/sdk/bin/header.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.h nsIOsmozilla.idl
-/usr/lib/xulrunner-sdk/sdk/bin/typelib.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.xpt nsIOsmozilla.idl
+%{_libdir}/xulrunner-sdk/sdk/bin/header.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.h nsIOsmozilla.idl
+%{_libdir}/xulrunner-sdk/sdk/bin/typelib.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.xpt nsIOsmozilla.idl
 cp -f nsIOsmozilla.xpt nsIOsmozilla.xpt_linux
 cd ../..
 %configure \
