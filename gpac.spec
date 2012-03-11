@@ -43,7 +43,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.6}
 %{?with_freetype:BuildRequires:	freetype-devel}
 BuildRequires:	jack-audio-connection-kit-devel
-%{?with_js:BuildRequires:	js-devel}
+%{?with_js:BuildRequires:	js-devel < 1.8.5}
 %{?with_jpeg:BuildRequires:	libjpeg-devel}
 %{?with_mad:BuildRequires:	libmad-devel}
 BuildRequires:	libogg-devel
