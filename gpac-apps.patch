@@ -1,0 +1,22 @@
+--- gpac/applications/Makefile.orig	2012-05-22 23:29:22.000000000 +0200
++++ gpac/applications/Makefile	2012-06-16 18:26:34.918450437 +0200
+@@ -17,15 +17,15 @@
+ INSTDIRS=mp4client
+ ifeq ($(CONFIG_XUL),no)
+ else
+-#INSTDIRS+=osmozilla
+-#APPDIRS+=osmozilla
++INSTDIRS+=osmozilla
++APPDIRS+=osmozilla
+ endif
+ 
+ #disable due to version incompatibilities
+ ifeq ($(USE_WXWIDGETS), yes)
+-#APPDIRS+=osmo4_wx
++APPDIRS+=osmo4_wx
+ #V4STUDIODIR=V4Studio
+-#INSTDIRS+=osmo4_wx
++INSTDIRS+=osmo4_wx
+ endif
+ 
+ ALLDIRS=$(APPDIRS)

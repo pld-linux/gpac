@@ -1,0 +1,47 @@
+--- gpac/src/terminal/terminal.c.orig	2012-05-23 20:57:42.000000000 +0200
++++ gpac/src/terminal/terminal.c	2012-06-17 09:20:24.582866480 +0200
+@@ -1866,6 +1866,7 @@ u32 gf_term_sample_clocks(GF_Terminal *t
+ 	return 0;
+ }
+ 
++GF_EXPORT
+ const char *gf_term_get_text_selection(GF_Terminal *term, Bool probe_only)
+ {
+ 	Bool has_text;
+@@ -1876,7 +1877,7 @@ const char *gf_term_get_text_selection(G
+ 	return gf_sc_get_selected_text(term->compositor);
+ }
+ 
+-
++GF_EXPORT
+ GF_Err gf_term_paste_text(GF_Terminal *term, const char *txt, Bool probe_only)
+ {
+ 	if (!term) return GF_BAD_PARAM;
+--- gpac/src/terminal/object_browser.c.orig	2012-03-27 11:48:05.000000000 +0200
++++ gpac/src/terminal/object_browser.c	2012-06-17 09:21:02.492864890 +0200
+@@ -102,6 +102,7 @@ u32 gf_term_object_subscene_type(GF_Term
+ }
+ 
+ /*select given object when stream selection is available*/
++GF_EXPORT
+ void gf_term_select_object(GF_Terminal *term, GF_ObjectManager *odm)
+ {
+ 	if (!term || !odm) return;
+--- gpac/src/utils/os_divers.c.orig	2012-04-04 16:47:33.000000000 +0200
++++ gpac/src/utils/os_divers.c	2012-06-17 09:22:03.782862317 +0200
+@@ -311,6 +311,7 @@ void gf_move_file(const char *fileName,
+ #endif
+ }
+ 
++GF_EXPORT
+ void gf_rand_init(Bool Reset)
+ {
+ 	if (Reset) {
+@@ -324,6 +325,7 @@ void gf_rand_init(Bool Reset)
+ 	}
+ }
+ 
++GF_EXPORT
+ u32 gf_rand()
+ {
+ 	return rand();

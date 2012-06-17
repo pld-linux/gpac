@@ -1,3 +1,8 @@
+# TODO:
+# - Platinum UPnP: http://www.plutinosoft.com/platinum
+# - AVCap: http://libavcap.sourceforge.net/
+# - OpenSVCDecoder: http://opensvcdecoder.sourceforge.net/
+# - libfreenect: http://openkinect.org/wiki/Main_Page
 #
 # Conditional build:
 %bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
@@ -14,26 +19,24 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.4.5
-Release:	15
+Version:	0.5.0
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
-# Source0-md5:	755e8c438a48ebdb13525dd491f5b0d1
+# Source0-md5:	19f7bb7c16913c22bdd453db1e653ca0
 Patch0:		%{name}-install.patch
-Patch1:		%{name}-libpng.patch
-Patch2:		%{name}-pic.patch
-Patch3:		%{name}-xulrunner.patch
-Patch4:		%{name}-amr.patch
-Patch5:		%{name}-ffmpeg.patch
-Patch6:		%{name}-install-is-not-clean.patch
-Patch7:		%{name}-flags.patch
-Patch8:		%{name}-idl_uuid.patch
-Patch9:		240_all_libpng15.patch
-Patch10:	250_all_openjpeg14.patch
-Patch11:	260_all_ffmpeg_bump.patch
-Patch12:	270_all_ffmpeg_trunk.patch
+Patch1:		%{name}-xulrunner.patch
+Patch2:		%{name}-amr.patch
+Patch3:		%{name}-install-is-not-clean.patch
+Patch4:		%{name}-flags.patch
+Patch5:		%{name}-idl_uuid.patch
+Patch6:		%{name}-js.patch
+Patch7:		%{name}-apps.patch
+Patch8:		%{name}-export.patch
 URL:		http://gpac.sourceforge.net/
+BuildRequires:	DirectFB-devel
+BuildRequires:	OpenGL-devel
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9
@@ -52,6 +55,7 @@ BuildRequires:	libtheora-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	openjpeg-devel
+BuildRequires:	openssl-devel
 BuildRequires:	pulseaudio-devel
 BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	sed >= 4.0
@@ -62,6 +66,7 @@ BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
 BuildRequires:	xulrunner-devel >= 2:9.0.0
 %{?with_xvid:BuildRequires:	xvid-devel}
+BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -106,6 +111,18 @@ Header files for GPAC library.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki GPAC.
 
+%package static
+Summary:	Static GPAC library
+Summary(pl.UTF-8):	Statyczna biblioteka GPAC
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static GPAC library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka GPAC.
+
 %package gui
 Summary:	wxWidgets-based GUI for GPAC
 Summary(pl.UTF-8):	Oparty na wxWidgets graficzny interfejs do GPAC
@@ -143,26 +160,19 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
 
-%if %{with amr}
-sed -i -e 's/amr_\([nw]b\)_ft/amr\1/' modules/amr_float_dec/amr_float_dec.c
-%endif
 sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure
 
 %build
-cd applications/osmozilla
-%{_libdir}/xulrunner-sdk/sdk/bin/header.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.h nsIOsmozilla.idl
-%{_libdir}/xulrunner-sdk/sdk/bin/typelib.py -I /usr/share/idl/xulrunner -o nsIOsmozilla.xpt nsIOsmozilla.idl
-cp -f nsIOsmozilla.xpt nsIOsmozilla.xpt_linux
-cd ../..
-%configure \
+# not autoconf configure
+./configure \
+	--prefix=%{_prefix} \
+	--libdir=%{_lib} \
+	--mandir=%{_mandir} \
 	--X11-path=/usr \
 	--cc="%{__cc}" \
+	--cpp="%{__cxx}" \
 	--disable-opt \
 	%{!?with_wx:--disable-wx} \
 	%{?with_amr:--enable-amr} \
@@ -181,21 +191,18 @@ cd ../..
 	%{!?with_xvid:--use-xvid=no} \
 	--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"
 
-%{__make} -j1 \
-	BUILD_INSTALL=yes \
-	CXX="%{__cxx} -fPIC" \
-	libdir=%{_lib}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 
-%{__make} install \
+%{__make} install install-lib \
+	DESTDIR=$RPM_BUILD_ROOT
+
+%{__make} -C applications install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	libdir=%{_lib} \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_browserpluginsdir}
-
-install -d $RPM_BUILD_ROOT%{_includedir}
-cp -a include/gpac $RPM_BUILD_ROOT%{_includedir}/gpac
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -216,8 +223,8 @@ fi
 %doc AUTHORS BUGS Changelog README TODO
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
-%attr(755,root,root) %{_libdir}/libgpac-%{version}.so
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so
+%attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so.2
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac
@@ -227,7 +234,13 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgpac.so
 %{_includedir}/gpac
+%{_pkgconfigdir}/gpac.pc
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libgpac_static.a
 
 %if %{with wx}
 %files gui

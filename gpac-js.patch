@@ -1,0 +1,51 @@
+--- gpac/configure.orig	2012-06-15 21:26:23.188290228 +0200
++++ gpac/configure	2012-06-15 22:10:36.141512228 +0200
+@@ -691,7 +691,7 @@
+         #dc added
+     else
+         #try pkg-config
+-        if $pkg_config --exists mozilla-js 2> /dev/null  ; then
++        if $pkg_config --exists nomozilla-js 2> /dev/null  ; then
+             js_flags=`$pkg_config --cflags mozilla-js`
+             js_lib_pkg=`$pkg_config --libs mozilla-js`
+             if $cc -o $TMPO $TMPC $js_flags $js_lib_pkg $LDFLAGS -lpthread 2> /dev/null  ; then
+@@ -699,29 +699,13 @@
+                 js_lib=`$pkg_config --libs mozilla-js`
+             fi
+         #try firefox folders (starting at ubuntu 11.10, no pkg-config)
+-        elif ls -d /usr/lib/firefox* > /dev/null 2>&1 ; then
+-            firefox_version=`cd /usr/lib ; ls -d firefox* | grep -v addons | grep -v devel ; cd - > /dev/null`
+-            for i in $firefox_version ; do
+-                if test "$has_js" = "no" ; then
+-                    js_inc="/usr/include/$i"
+-                    js_flags="-DXP_UNIX -I$js_inc"
+-                    js_lib="-L/usr/lib/$i/ -lxul -lmozsqlite3 -lmozalloc -lnssutil3 -lnss3 -lnspr4 -lsmime3"
+-                    if $cc -o $TMPO $TMPC $js_flags $js_lib 2> /dev/null  ; then
+-                        has_js="$i"
+-                    elif $cc -o $TMPO $TMPC $js_flags -lnssutil3 $js_lib -lssl3 2> /dev/null  ; then
+-                        #firefox 11 compatibility
+-                        has_js="$i"
+-                        js_lib="-lnssutil3 $js_lib -lssl3"
+-                    fi
+-                fi
+-            done
+         fi
+ 
+         if test "$has_js" = "no" ; then
+             #try prefix (DC)
+             js_inc="$prefix/include/js"
+             js_flags="-DXP_UNIX -I$prefix/include/js"
+-            if $cc -o $TMPO $TMPC $js_flags -L$prefix/lib -ljs -lpthread 2> /dev/null  ; then
++            if $cc -o $TMPO $TMPC $js_flags -ljs -lpthread 2> /dev/null  ; then
+                 has_js="prefix"
+                 #dc added end
+             else
+@@ -782,7 +766,7 @@
+         #try prefix (DC)
+         js_inc="$prefix/include/js"
+         js_flags="-DXP_UNIX -I$prefix/include/js"
+-        if $cc -o $TMPO $TMPC $js_flags -L$prefix/lib -ljs 2> /dev/null  ; then
++        if $cc -o $TMPO $TMPC $js_flags -ljs 2> /dev/null  ; then
+             has_js="prefix"
+             #dc added end
+         else
