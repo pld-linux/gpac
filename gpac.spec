@@ -6,6 +6,7 @@
 #
 # Conditional build:
 %bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
+%bcond_without	directfb	# DirectFB support
 %bcond_without	faad		# AAC decoding support
 %bcond_without	ffmpeg		# ffmpeg support
 %bcond_without	freetype	# freetype support
@@ -35,7 +36,7 @@ Patch6:		%{name}-js.patch
 Patch7:		%{name}-apps.patch
 Patch8:		%{name}-export.patch
 URL:		http://gpac.sourceforge.net/
-BuildRequires:	DirectFB-devel
+%{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
@@ -192,6 +193,8 @@ chmod a+x configure
 	%{!?with_png:--use-png=no} \
 	%{!?with_xvid:--use-xvid=no} \
 	--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"
+
+%{!?with_directfb: sed -i 's/CONFIG_DIRECTFB.*/CONFIG_DIRECTFB=no/' config.mak}
 
 %{__make} -j1
 
