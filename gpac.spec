@@ -36,7 +36,7 @@ Patch7:		%{name}-apps.patch
 Patch8:		%{name}-export.patch
 URL:		http://gpac.sourceforge.net/
 BuildRequires:	DirectFB-devel
-BuildRequires:	OpenGL-devel
+BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9
@@ -45,6 +45,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.6}
 %{?with_freetype:BuildRequires:	freetype-devel}
+%{?with_wx:BuildRequires:	gtk+2-devel >= 2:2.20.1}
 BuildRequires:	jack-audio-connection-kit-devel
 %{?with_js:BuildRequires:	js-devel < 2:1.8.5}
 %{?with_jpeg:BuildRequires:	libjpeg-devel}
@@ -56,6 +57,7 @@ BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	openjpeg-devel
 BuildRequires:	openssl-devel
+BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	sed >= 4.0
