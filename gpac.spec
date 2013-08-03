@@ -11,7 +11,7 @@
 %bcond_without	ffmpeg		# ffmpeg support
 %bcond_without	freetype	# freetype support
 %bcond_without	jpeg		# JPEG support
-%bcond_without	js		# JavaScript support
+%bcond_with	js		# JavaScript support
 %bcond_without	mad		# MP3 support
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
@@ -21,7 +21,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.5.0
-Release:	6
+Release:	7
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
