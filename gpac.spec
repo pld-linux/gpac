@@ -164,7 +164,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
+%patch9 -p0
 
 sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure
