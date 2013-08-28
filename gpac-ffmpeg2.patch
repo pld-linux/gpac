@@ -11,44 +11,6 @@ Index: modules/ffmpeg_in/ffmpeg_in.h
  	Bool check_h264_isma;
  
  	u32 base_ES_ID;
-Index: modules/ffmpeg_in/ffmpeg_load.c
-===================================================================
---- modules/ffmpeg_in/ffmpeg_load.c	(revision 4282)
-+++ modules/ffmpeg_in/ffmpeg_load.c	(revision 4451)
-@@ -44,7 +44,7 @@
- #endif
- 
- 
--GF_EXPORT
-+GPAC_MODULE_EXPORT
- const u32 *QueryInterfaces()
- {
- 	static u32 si [] = {
-@@ -57,7 +57,7 @@
- 	return si;
- }
- 
--GF_EXPORT
-+GPAC_MODULE_EXPORT
- GF_BaseInterface *LoadInterface(u32 InterfaceType)
- {
- 	if (InterfaceType == GF_MEDIA_DECODER_INTERFACE) return FFDEC_Load();
-@@ -67,7 +67,7 @@
- 	return NULL;
- }
- 
--GF_EXPORT
-+GPAC_MODULE_EXPORT
- void ShutdownInterface(GF_BaseInterface *ifce)
- {
- 	switch (ifce->InterfaceType) {
-@@ -81,3 +81,6 @@
- #endif
- 	}
- }
-+
-+
-+GPAC_MODULE_STATIC_DELARATION( ffmpeg )
 Index: modules/ffmpeg_in/ffmpeg_demux.c
 ===================================================================
 --- modules/ffmpeg_in/ffmpeg_demux.c	(revision 4282)
@@ -72,15 +34,6 @@ Index: modules/ffmpeg_in/ffmpeg_demux.c
  static u32 FFDemux_Run(void *par)
  {
  	AVPacket pkt;
-@@ -76,7 +88,7 @@
- 	seek_to = (s64) (AV_TIME_BASE*ffd->seek_time);
- 	map_video_time = !ffd->seekable;
- 
--	video_init = (seek_to && ffd->video_ch) ? 0 : 1;
-+	video_init = (seek_to && ffd->video_ch) ? GF_FALSE : GF_TRUE;
- 	seek_audio = seek_video = 0;
- 	if (ffd->seekable && (ffd->audio_st>=0)) seek_audio = (u64) (s64) (ffd->seek_time*ffd->audio_tscale.den);
- 	if (ffd->seekable && (ffd->video_st>=0)) seek_video = (u64) (s64) (ffd->seek_time*ffd->video_tscale.den);
 Index: modules/ffmpeg_in/ffmpeg_decode.c
 ===================================================================
 --- modules/ffmpeg_in/ffmpeg_decode.c	(revision 4282)
@@ -164,31 +117,3 @@ Index: modules/ffmpeg_in/ffmpeg_decode.c
  				return GF_NON_COMPLIANT_BITSTREAM;
  			}
  		}
-@@ -979,7 +1005,7 @@
- 	else if (StreamType==GF_STREAM_VISUAL) {
- 
- 		/*fixme - we should use some priority rather than declare ffmpeg can't handle svc*/
--		if (esd->decoderConfig->objectTypeIndication == GPAC_OTI_VIDEO_AVC) {
-+		if (esd->decoderConfig->objectTypeIndication == GPAC_OTI_VIDEO_AVC){
- 			if (esd->decoderConfig->decoderSpecificInfo && esd->decoderConfig->decoderSpecificInfo->data) {
- 				Bool is_svc = 0;
- 				u32 i, count;
-@@ -1003,7 +1029,7 @@
- 				gf_odf_avc_cfg_del(cfg);
- 				return (is_svc || esd->decoderConfig->rvc_config || esd->decoderConfig->predefined_rvc_config) ? GF_CODEC_MAYBE_SUPPORTED : GF_CODEC_SUPPORTED;
- 			}
--			if (esd->decoderConfig->rvc_config || esd->decoderConfig->predefined_rvc_config) return GF_CODEC_MAYBE_SUPPORTED;
-+			if (esd->decoderConfig->rvc_config || esd->decoderConfig->predefined_rvc_config || esd->has_ref_base) return GF_CODEC_MAYBE_SUPPORTED;
- 			return GF_CODEC_SUPPORTED;
- 		}
- 
-@@ -1011,7 +1037,8 @@
- 		/*MPEG-4 v1 simple profile*/
- 		case GPAC_OTI_VIDEO_MPEG4_PART2: codec_id = CODEC_ID_MPEG4; break;
- 		/*H264 (not std OTI, just the way we use it internally)*/
--		case GPAC_OTI_VIDEO_AVC: codec_id = CODEC_ID_H264; break;
-+		case GPAC_OTI_VIDEO_AVC:
-+			codec_id = CODEC_ID_H264; break;
- 		/*MPEG1 video*/
- 		case GPAC_OTI_VIDEO_MPEG1:
- 		/*MPEG2 video*/
