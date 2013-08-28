@@ -35,6 +35,7 @@ Patch5:		%{name}-idl_uuid.patch
 Patch6:		%{name}-js.patch
 Patch7:		%{name}-apps.patch
 Patch8:		%{name}-export.patch
+Patch9:		%{name}-ffmpeg2.patch
 URL:		http://gpac.sourceforge.net/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -163,6 +164,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure

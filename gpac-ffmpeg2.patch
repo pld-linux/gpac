@@ -1,0 +1,15 @@
+Index: gpac/modules/ffmpeg_in/ffmpeg_in.h
+===================================================================
+--- gpac.orig/modules/ffmpeg_in/ffmpeg_in.h
++++ gpac/modules/ffmpeg_in/ffmpeg_in.h
+@@ -96,6 +96,10 @@ void gf_av_vlog(void* avcl, int level, c
+ #endif
+ 
+ 
++#ifndef AVCODEC_MAX_AUDIO_FRAME_SIZE
++#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
++#endif
++
+ 
+ 
+ /*FFMPEG decoder module */
