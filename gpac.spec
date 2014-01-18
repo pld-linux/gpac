@@ -21,7 +21,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.5.0
-Release:	11
+Release:	12
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -36,6 +36,7 @@ Patch6:		%{name}-js.patch
 Patch7:		%{name}-apps.patch
 Patch8:		%{name}-export.patch
 Patch9:		%{name}-ffmpeg2.patch
+Patch10:	wxWidgets3.patch
 URL:		http://gpac.sourceforge.net/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -165,6 +166,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p0
+%patch10 -p1
 
 sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure

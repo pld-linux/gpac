@@ -1,0 +1,244 @@
+diff -ur gpac/applications/osmo4_wx/menubtn.cpp gpac.wx3/applications/osmo4_wx/menubtn.cpp
+--- gpac/applications/osmo4_wx/menubtn.cpp	2010-07-28 17:53:09.000000000 +0200
++++ gpac.wx3/applications/osmo4_wx/menubtn.cpp	2014-01-18 19:05:19.802057643 +0100
+@@ -86,7 +86,7 @@
+ 
+     wxSize bestSize = DoGetBestSize();
+     SetSize(wxSize(size.x<0 ? bestSize.x:size.x, size.y<0 ? bestSize.y:size.y));
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+     SetBestSize(GetSize());
+ #else
+     SetInitialSize(GetSize());
+@@ -161,7 +161,7 @@
+         
+         m_eventType = wxEVT_LEFT_UP;
+         
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+         if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
+ #else
+         if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
+@@ -200,7 +200,7 @@
+         
+         m_eventType = wxEVT_RIGHT_UP;
+ 
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+         if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
+ #else
+         if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
+@@ -319,7 +319,7 @@
+ 
+ void wxCustomButton::Paint( wxDC &dc )
+ {
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+     dc.BeginDrawing();
+ #endif
+ 
+@@ -401,7 +401,7 @@
+     dc.SetBackground(wxNullBrush);
+     dc.SetBrush(wxNullBrush);
+     dc.SetPen(wxNullPen);
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+     dc.EndDrawing();
+ #endif
+ }
+@@ -573,7 +573,7 @@
+         {
+             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
+         
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+             if (GetRect().Inside(p) || labelBut->GetRect().Inside(p))
+ #else
+             if (GetRect().Contains(p) || labelBut->GetRect().Contains(p))
+@@ -621,7 +621,7 @@
+         {
+             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
+         
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+             if (GetRect().Inside(p) || dropBut->GetRect().Inside(p))
+ #else
+             if (GetRect().Contains(p) || dropBut->GetRect().Contains(p))
+@@ -699,7 +699,7 @@
+     SetSize( wxSize(size.x < 0 ? bestSize.x : size.x, 
+                     size.y < 0 ? bestSize.y : size.y) );
+    
+-#if (wxMINOR_VERSION<8) 
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+     SetBestSize(GetSize());
+ #else
+     SetInitialSize(GetSize());
+diff -ur gpac/applications/osmo4_wx/Playlist.cpp gpac.wx3/applications/osmo4_wx/Playlist.cpp
+--- gpac/applications/osmo4_wx/Playlist.cpp	2010-07-28 17:53:09.000000000 +0200
++++ gpac.wx3/applications/osmo4_wx/Playlist.cpp	2014-01-18 19:00:08.102059900 +0100
+@@ -292,7 +292,7 @@
+ 
+ void wxPlaylist::OnAddFile(wxCommandEvent &WXUNUSED(event)) 
+ {
+-	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), m_pApp->GetFileFilter(), wxOPEN | wxCHANGE_DIR | /*wxHIDE_READONLY |*/ wxMULTIPLE);
++	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), m_pApp->GetFileFilter(), wxFD_OPEN | wxFD_CHANGE_DIR | /*wxFD_HIDE_READONLY |*/ wxFD_MULTIPLE);
+ 
+ 	if (dlg.ShowModal() == wxID_OK) {
+ 		wxArrayString stra;
+@@ -448,7 +448,7 @@
+ 	char szPath[GF_MAX_PATH];
+ 	if (!gf_list_count(m_entries)) return;
+ 
+-	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), wxT("M3U Playlists|*.m3u|ShoutCast Playlists|*.pls|"), wxSAVE | wxCHANGE_DIR | wxOVERWRITE_PROMPT);
++	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), wxT("M3U Playlists|*.m3u|ShoutCast Playlists|*.pls|"), wxFD_SAVE | wxFD_CHANGE_DIR | wxFD_OVERWRITE_PROMPT);
+ 	if (dlg.ShowModal() != wxID_OK) return;
+ 
+ 	strcpy(szPath, dlg.GetPath().mb_str(wxConvUTF8));
+@@ -497,7 +497,7 @@
+ 
+ void wxPlaylist::OnOpen(wxCommandEvent & WXUNUSED(event)) 
+ {
+-	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), wxT("M3U & PLS Playlists|*.m3u;*.pls|M3U Playlists|*.m3u|ShoutCast Playlists|*.pls|"), wxOPEN | wxCHANGE_DIR/* | wxHIDE_READONLY*/);
++	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), wxT("M3U & PLS Playlists|*.m3u;*.pls|M3U Playlists|*.m3u|ShoutCast Playlists|*.pls|"), wxFD_OPEN | wxFD_CHANGE_DIR/* | wxFD_HIDE_READONLY*/);
+ 	if (dlg.ShowModal() != wxID_OK) return;
+ 
+ 	Clear();
+diff -ur gpac/applications/osmo4_wx/wxOsmo4.cpp gpac.wx3/applications/osmo4_wx/wxOsmo4.cpp
+--- gpac/applications/osmo4_wx/wxOsmo4.cpp	2011-07-29 15:14:43.000000000 +0200
++++ gpac.wx3/applications/osmo4_wx/wxOsmo4.cpp	2014-01-18 18:59:09.155393660 +0100
+@@ -224,9 +224,9 @@
+ #if 0
+ 		/*log*/
+ 		if (evt->message.error)
+-			::wxLogMessage(wxString(evt->message.message, wxConvUTF8) + wxT(" (") + wxString(servName, wxConvUTF8) + wxT(") ") + wxString(gf_error_to_string(evt->message.error), wxConvUTF8) );
++			wxLogMessage(wxString(evt->message.message, wxConvUTF8) + wxT(" (") + wxString(servName, wxConvUTF8) + wxT(") ") + wxString(gf_error_to_string(evt->message.error), wxConvUTF8) );
+ 		else
+-			::wxLogMessage(wxString(evt->message.message, wxConvUTF8) + wxT(" (") + wxString(servName, wxConvUTF8) + wxT(")"));
++			wxLogMessage(wxString(evt->message.message, wxConvUTF8) + wxT(" (") + wxString(servName, wxConvUTF8) + wxT(")"));
+ #endif
+ 	}
+ 		break;
+@@ -286,7 +286,7 @@
+ 			{
+ 				wxGPACEvent wxevt(app);
+ 				wxevt.gpac_evt = *evt;
+-				app->AddPendingEvent(wxevt);
++				app->GetEventHandler()->AddPendingEvent(wxevt);
+ 			}
+ 				break;
+ 			}
+@@ -299,7 +299,7 @@
+ 		wxevt.gpac_evt.type = GF_EVENT_CONNECT;
+ 		wxevt.gpac_evt.connect.is_connected = evt->connect.is_connected;
+ 		if (!evt->connect.is_connected) app->m_duration = 0;
+-		app->AddPendingEvent(wxevt);
++		app->GetEventHandler()->AddPendingEvent(wxevt);
+ 	}
+ 		break;
+ 	case GF_EVENT_NAVIGATE:
+@@ -307,7 +307,7 @@
+ 		wxGPACEvent wxevt(app);
+ 		wxevt.to_url = wxString(evt->navigate.to_url, wxConvUTF8);
+ 		wxevt.gpac_evt.type = evt->type;
+-		app->AddPendingEvent(wxevt);
++		app->GetEventHandler()->AddPendingEvent(wxevt);
+ 	}
+ 		return 1;
+ 	case GF_EVENT_SET_CAPTION:
+@@ -315,7 +315,7 @@
+ 		wxGPACEvent wxevt(app);
+ 		wxevt.to_url = wxString(evt->caption.caption, wxConvUTF8);
+ 		wxevt.gpac_evt.type = evt->type;
+-		app->AddPendingEvent(wxevt);
++		app->GetEventHandler()->AddPendingEvent(wxevt);
+ 	}
+ 		return 1;
+ 
+@@ -327,7 +327,7 @@
+ 	{
+ 		wxGPACEvent wxevt(app);
+ 		wxevt.gpac_evt = *evt;
+-		app->AddPendingEvent(wxevt);
++		app->GetEventHandler()->AddPendingEvent(wxevt);
+ 	}
+ 		break;
+ 	case GF_EVENT_DBLCLICK:
+@@ -536,7 +536,7 @@
+     wxString abs_gpac_path = wxT("");
+ 	char *gpac_cfg, *sep;
+ 
+-	::wxLogMessage(wxT("Looking for GPAC configuration file"));
++	wxLogMessage(wxT("Looking for GPAC configuration file"));
+ 
+ 	/*load config*/
+ 	Bool first_launch = 0;
+@@ -565,7 +565,7 @@
+ 
+ 	gf_sys_init(0);
+ 
+-	::wxLogMessage(wxT("GPAC configuration file opened - looking for modules"));
++	wxLogMessage(wxT("GPAC configuration file opened - looking for modules"));
+ 
+ 	m_user.modules = gf_modules_new(str, m_user.config);
+ 	/*initial launch*/
+@@ -591,12 +591,12 @@
+ 
+ 
+ 
+-	::wxLogMessage(wxT("%d modules found:"), gf_modules_get_count(m_user.modules));
++	wxLogMessage(wxT("%d modules found:"), gf_modules_get_count(m_user.modules));
+ 	for (u32 i=0; i<gf_modules_get_count(m_user.modules); i++) {
+-		::wxLogMessage(wxT("\t") + wxString(gf_modules_get_file_name(m_user.modules, i), wxConvUTF8) );
++		wxLogMessage(wxT("\t") + wxString(gf_modules_get_file_name(m_user.modules, i), wxConvUTF8) );
+ 	}
+ 
+-	::wxLogMessage(wxT("Starting GPAC Terminal"));
++	wxLogMessage(wxT("Starting GPAC Terminal"));
+ 	/*now load terminal*/
+ 	m_user.opaque = this;
+ 	m_user.EventProc = GPAC_EventProc;
+@@ -608,7 +608,7 @@
+ 		wxMessageDialog(NULL, wxT("Fatal Error"), wxT("Cannot load GPAC Terminal"), wxOK).ShowModal();
+ 		return 0;
+ 	} else {
+-		::wxLogMessage(wxT("GPAC Terminal started") );
++		wxLogMessage(wxT("GPAC Terminal started") );
+ 	}
+ 	return 1;
+ }
+@@ -874,7 +874,7 @@
+ 	sOpt = gf_cfg_get_key(m_user.config, "Audio", "DriverName");
+ 
+ 	if (!strcmp(sOpt, "No Audio Output Available")) {
+-	  ::wxLogMessage(wxT("WARNING: no audio output availble - make sure no other program is locking the sound card"));
++	  wxLogMessage(wxT("WARNING: no audio output availble - make sure no other program is locking the sound card"));
+ 	  SetStatus(wxT("No audio ouput available"));
+ 
+ 	} else {
+@@ -1137,7 +1137,7 @@
+ 
+ void wxOsmo4Frame::OnFileOpen(wxCommandEvent & WXUNUSED(event))
+ {
+-	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), GetFileFilter(), wxOPEN | wxMULTIPLE | wxCHANGE_DIR /*| wxHIDE_READONLY*/);
++	wxFileDialog dlg(this, wxT("Select file(s)"), wxT(""), wxT(""), GetFileFilter(), wxFD_OPEN | wxFD_MULTIPLE | wxFD_CHANGE_DIR /*| wxHIDE_READONLY*/);
+ 
+ 	if (dlg.ShowModal() != wxID_OK) return;
+ 
+@@ -1900,7 +1900,7 @@
+ 		evt.SetEventType(wxEVT_COMMAND_COMBOBOX_SELECTED);
+ 		evt.SetEventObject(this);
+ 		evt.SetId(GetId());
+-		GetParent()->AddPendingEvent(evt);
++		GetParent()->GetEventHandler()->AddPendingEvent(evt);
+ 	}
+ }
+ 
+@@ -2135,7 +2135,7 @@
+ 
+ void wxOsmo4Frame::OnAddSub(wxCommandEvent &WXUNUSED(event))
+ {
+-	wxFileDialog dlg(this, wxT("Add Subtitle"), wxT(""), wxT(""), wxT("All Subtitles|*.srt;*.ttxt|SRT Subtitles|*.srt|3GPP TimedText|*.ttxt|"), wxOPEN | wxCHANGE_DIR /* | wxHIDE_READONLY*/);
++	wxFileDialog dlg(this, wxT("Add Subtitle"), wxT(""), wxT(""), wxT("All Subtitles|*.srt;*.ttxt|SRT Subtitles|*.srt|3GPP TimedText|*.ttxt|"), wxFD_OPEN | wxFD_CHANGE_DIR /* | wxHIDE_READONLY*/);
+ 
+ 	if (dlg.ShowModal() == wxID_OK) {
+ 		AddSubtitle(dlg.GetPath().mb_str(wxConvUTF8), 1);
