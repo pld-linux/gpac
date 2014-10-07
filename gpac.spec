@@ -17,26 +17,26 @@
 %bcond_without	xvid		# xvid support
 %bcond_without	wx		# wxWidgets support
 #
+%define	snap	20141007
+#
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.5.0
-Release:	14
+Release:	14.%{snap}.1
 License:	LGPL v2+
 Group:		Applications/Multimedia
-Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
-# Source0-md5:	19f7bb7c16913c22bdd453db1e653ca0
+# Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
+Source0:	%{name}-%{snap}.tar.bz2
+# Source0-md5:	9e37b324e490d3118622d77bf238cb16
 Patch0:		%{name}-install.patch
 Patch1:		%{name}-xulrunner.patch
 Patch2:		%{name}-amr.patch
 Patch3:		%{name}-install-is-not-clean.patch
 Patch4:		%{name}-flags.patch
-Patch5:		%{name}-idl_uuid.patch
+Patch5:		wxWidgets3.patch
 Patch6:		%{name}-js.patch
 Patch7:		%{name}-apps.patch
-Patch8:		%{name}-export.patch
-Patch9:		%{name}-ffmpeg2.patch
-Patch10:	wxWidgets3.patch
 URL:		http://gpac.sourceforge.net/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -164,9 +164,6 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-%patch9 -p0
-%patch10 -p1
 
 sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure
@@ -233,7 +230,7 @@ fi
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
 %attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so.2
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so.3
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac
@@ -254,6 +251,7 @@ fi
 %if %{with wx}
 %files gui
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/DashCast
 %attr(755,root,root) %{_bindir}/Osmo4
 %endif
 

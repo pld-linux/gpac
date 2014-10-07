@@ -1,78 +1,3 @@
-diff -ur gpac/applications/osmo4_wx/menubtn.cpp gpac.wx3/applications/osmo4_wx/menubtn.cpp
---- gpac/applications/osmo4_wx/menubtn.cpp	2010-07-28 17:53:09.000000000 +0200
-+++ gpac.wx3/applications/osmo4_wx/menubtn.cpp	2014-01-18 19:05:19.802057643 +0100
-@@ -86,7 +86,7 @@
- 
-     wxSize bestSize = DoGetBestSize();
-     SetSize(wxSize(size.x<0 ? bestSize.x:size.x, size.y<0 ? bestSize.y:size.y));
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-     SetBestSize(GetSize());
- #else
-     SetInitialSize(GetSize());
-@@ -161,7 +161,7 @@
-         
-         m_eventType = wxEVT_LEFT_UP;
-         
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-         if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
- #else
-         if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
-@@ -200,7 +200,7 @@
-         
-         m_eventType = wxEVT_RIGHT_UP;
- 
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-         if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
- #else
-         if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
-@@ -319,7 +319,7 @@
- 
- void wxCustomButton::Paint( wxDC &dc )
- {
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-     dc.BeginDrawing();
- #endif
- 
-@@ -401,7 +401,7 @@
-     dc.SetBackground(wxNullBrush);
-     dc.SetBrush(wxNullBrush);
-     dc.SetPen(wxNullPen);
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-     dc.EndDrawing();
- #endif
- }
-@@ -573,7 +573,7 @@
-         {
-             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
-         
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-             if (GetRect().Inside(p) || labelBut->GetRect().Inside(p))
- #else
-             if (GetRect().Contains(p) || labelBut->GetRect().Contains(p))
-@@ -621,7 +621,7 @@
-         {
-             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
-         
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-             if (GetRect().Inside(p) || dropBut->GetRect().Inside(p))
- #else
-             if (GetRect().Contains(p) || dropBut->GetRect().Contains(p))
-@@ -699,7 +699,7 @@
-     SetSize( wxSize(size.x < 0 ? bestSize.x : size.x, 
-                     size.y < 0 ? bestSize.y : size.y) );
-    
--#if (wxMINOR_VERSION<8) 
-+#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
-     SetBestSize(GetSize());
- #else
-     SetInitialSize(GetSize());
 diff -ur gpac/applications/osmo4_wx/Playlist.cpp gpac.wx3/applications/osmo4_wx/Playlist.cpp
 --- gpac/applications/osmo4_wx/Playlist.cpp	2010-07-28 17:53:09.000000000 +0200
 +++ gpac.wx3/applications/osmo4_wx/Playlist.cpp	2014-01-18 19:00:08.102059900 +0100
@@ -206,13 +131,13 @@ diff -ur gpac/applications/osmo4_wx/wxOsmo4.cpp gpac.wx3/applications/osmo4_wx/w
  	}
  	return 1;
  }
-@@ -874,7 +874,7 @@
+@@ -877,7 +877,7 @@ wxOsmo4Frame::wxOsmo4Frame() :
  	sOpt = gf_cfg_get_key(m_user.config, "Audio", "DriverName");
  
  	if (!strcmp(sOpt, "No Audio Output Available")) {
--	  ::wxLogMessage(wxT("WARNING: no audio output availble - make sure no other program is locking the sound card"));
-+	  wxLogMessage(wxT("WARNING: no audio output availble - make sure no other program is locking the sound card"));
- 	  SetStatus(wxT("No audio ouput available"));
+-		::wxLogMessage(wxT("WARNING: no audio output availble - make sure no other program is locking the sound card"));
++		wxLogMessage(wxT("WARNING: no audio output availble - make sure no other program is locking the sound card"));
+ 		SetStatus(wxT("No audio ouput available"));
  
  	} else {
 @@ -1137,7 +1137,7 @@
@@ -242,3 +167,89 @@ diff -ur gpac/applications/osmo4_wx/wxOsmo4.cpp gpac.wx3/applications/osmo4_wx/w
  
  	if (dlg.ShowModal() == wxID_OK) {
  		AddSubtitle(dlg.GetPath().mb_str(wxConvUTF8), 1);
+--- gpac/applications/osmo4_wx/wxGPACControl.cpp~	2014-10-07 23:09:59.000000000 +0200
++++ gpac/applications/osmo4_wx/wxGPACControl.cpp	2014-10-07 23:36:33.313608359 +0200
+@@ -398,7 +398,7 @@
+ 
+ 	/*audio dec enum*/
+ 	sOpt = gf_cfg_get_key(cfg, "Systems", "DefAudioDec");
+-	u32 count = gf_modules_get_count(m_pApp->m_user.modules);
++	count = gf_modules_get_count(m_pApp->m_user.modules);
+ 	GF_BaseDecoder *ifc_d;
+ 	select = 0;
+ 	s32 to_sel = 0;
+
+--- gpac/applications/osmo4_wx/menubtn.cpp~	2014-10-07 23:09:59.000000000 +0200
++++ gpac/applications/osmo4_wx/menubtn.cpp	2014-10-07 23:42:37.356710868 +0200
+@@ -86,7 +86,7 @@ bool wxCustomButton::Create(wxWindow* pa
+ 
+ 	wxSize bestSize = DoGetBestSize();
+ 	SetSize(wxSize(size.x<0 ? bestSize.x:size.x, size.y<0 ? bestSize.y:size.y));
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 	SetBestSize(GetSize());
+ #else
+ 	SetInitialSize(GetSize());
+@@ -161,7 +161,7 @@ void wxCustomButton::OnMouseEvents(wxMou
+ 
+ 		m_eventType = wxEVT_LEFT_UP;
+ 
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 		if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
+ #else
+ 		if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
+@@ -200,7 +200,7 @@ void wxCustomButton::OnMouseEvents(wxMou
+ 
+ 		m_eventType = wxEVT_RIGHT_UP;
+ 
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 		if (wxRect(wxPoint(0,0), GetSize()).Inside(event.GetPosition()))
+ #else
+ 		if (wxRect(wxPoint(0,0), GetSize()).Contains(event.GetPosition()))
+@@ -319,7 +319,7 @@ void wxCustomButton::Redraw()
+ 
+ void wxCustomButton::Paint( wxDC &dc )
+ {
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 	dc.BeginDrawing();
+ #endif
+ 
+@@ -407,7 +407,7 @@ void wxCustomButton::Paint( wxDC &dc )
+ 	dc.SetBackground(wxNullBrush);
+ 	dc.SetBrush(wxNullBrush);
+ 	dc.SetPen(wxNullPen);
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 	dc.EndDrawing();
+ #endif
+ }
+@@ -580,7 +580,7 @@ public:
+ 		{
+ 			wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
+ 
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 			if (GetRect().Inside(p) || labelBut->GetRect().Inside(p))
+ #else
+ 			if (GetRect().Contains(p) || labelBut->GetRect().Contains(p))
+@@ -628,7 +628,7 @@ public:
+ 		{
+ 			wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
+ 
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 			if (GetRect().Inside(p) || dropBut->GetRect().Inside(p))
+ #else
+ 			if (GetRect().Contains(p) || dropBut->GetRect().Contains(p))
+@@ -706,7 +706,7 @@ bool wxMenuButton::Create( wxWindow* par
+ 	SetSize( wxSize(size.x < 0 ? bestSize.x : size.x,
+ 	                size.y < 0 ? bestSize.y : size.y) );
+ 
+-#if (wxMINOR_VERSION<8)
++#if (wxMINOR_VERSION<8) && (wxMAJOR_VERSION < 3)
+ 	SetBestSize(GetSize());
+ #else
+ 	SetInitialSize(GetSize());

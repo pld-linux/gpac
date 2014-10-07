@@ -1,14 +1,20 @@
 --- gpac/configure.orig	2012-06-15 21:26:23.188290228 +0200
 +++ gpac/configure	2012-06-15 22:10:36.141512228 +0200
-@@ -691,7 +691,7 @@
+@@ -727,11 +727,11 @@ EOF
          #dc added
-     else
+     elif test "$pkg_config" != "no"; then
          #try pkg-config
 -        if $pkg_config --exists mozilla-js 2> /dev/null  ; then
 +        if $pkg_config --exists nomozilla-js 2> /dev/null  ; then
-             js_flags=`$pkg_config --cflags mozilla-js`
-             js_lib_pkg=`$pkg_config --libs mozilla-js`
-             if $cc -o $TMPO $TMPC $js_flags $js_lib_pkg $LDFLAGS -lpthread 2> /dev/null  ; then
+             mozjs_pkgcfg="mozilla-js"
+-        elif $pkg_config --exists mozjs 2> /dev/null  ; then
++        elif $pkg_config --exists nomozjs 2> /dev/null  ; then
+             mozjs_pkgcfg="mozjs"
+-        elif $pkg_config --exists mozjs185 2> /dev/null  ; then
++        elif $pkg_config --exists nomozjs185 2> /dev/null  ; then
+             mozjs_pkgcfg="mozjs185"
+ 	fi
+ 
 @@ -699,29 +699,13 @@
                  js_lib=`$pkg_config --libs mozilla-js`
              fi
