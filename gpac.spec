@@ -16,14 +16,18 @@
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
 %bcond_without	wx		# wxWidgets support
+%bcond_without	plugin		# don't build xulrunner/firefox/iceweasel plugin
 #
 %define	snap	20141007
 #
+%ifarch x32
+%undefine	with_plugin
+%endif
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.5.0
-Release:	14.%{snap}.1
+Release:	15.%{snap}.1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 # Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
@@ -69,7 +73,7 @@ BuildRequires:	unzip
 BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
-BuildRequires:	xulrunner-devel >= 2:9.0.0
+%{?with_plugin:BuildRequires:	xulrunner-devel >= 2:9.0.0}
 %{?with_xvid:BuildRequires:	xvid-devel}
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -180,11 +184,11 @@ chmod a+x configure
 	--disable-opt \
 	%{!?with_wx:--disable-wx} \
 	%{?with_amr:--enable-amr} \
-	--enable-joystick \
 	--enable-pic \
-	--extra-cflags="%{rpmcflags}" \
+	--extra-cflags="%{rpmcflags} -DFF_API_CLOSE_INPUT_FILE" \
 	--extra-ldflags="%{rpmldflags}" \
-	--mozdir=%{_browserpluginsdir} \
+	%{?with_plugin:--mozdir=%{_browserpluginsdir}} \
+	%{?with_plugin:--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"} \
 	%{!?with_faad:--use-faad=no} \
 	%{!?with_ffmpeg:--use-ffmpeg=no} \
 	%{!?with_freetype:--use-ft=no} \
@@ -193,7 +197,7 @@ chmod a+x configure
 	%{!?with_mad:--use-mad=no} \
 	%{!?with_png:--use-png=no} \
 	%{!?with_xvid:--use-xvid=no} \
-	--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"
+	--enable-joystick
 
 %{!?with_directfb: sed -i 's/CONFIG_DIRECTFB.*/CONFIG_DIRECTFB=no/' config.mak}
 
@@ -255,7 +259,9 @@ fi
 %attr(755,root,root) %{_bindir}/Osmo4
 %endif
 
+%if %{with plugin}
 %files -n browser-plugin-%{name}
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_browserpluginsdir}/nposmozilla.so
 %{_browserpluginsdir}/nposmozilla.xpt
+%endif
