@@ -16,7 +16,7 @@
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
 %bcond_without	wx		# wxWidgets support
-%bcond_without	plugin		# don't build xulrunner/firefox/iceweasel plugin
+%bcond_with	plugin		# don't build xulrunner/firefox/iceweasel plugin
 #
 %define	snap	20141007
 #
