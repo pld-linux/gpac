@@ -24,7 +24,7 @@
 %undefine	with_plugin
 %endif
 #
-%define		rel 3
+%define		rel 4
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
