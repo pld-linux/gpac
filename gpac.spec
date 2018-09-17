@@ -18,8 +18,6 @@
 %bcond_without	wx		# wxWidgets support
 %bcond_with	plugin		# don't build xulrunner/firefox/iceweasel plugin
 #
-%define	snap	20141007
-#
 %ifarch x32
 %undefine	with_plugin
 %endif
@@ -28,7 +26,7 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	0.7.1
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Applications/Multimedia
 Source0:	https://github.com/gpac/gpac/archive/v%{version}.tar.gz
@@ -238,9 +236,9 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS Changelog README.md TODO
+%attr(755,root,root) %{_bindir}/MP42TS
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
-%attr(755,root,root) %{_bindir}/MP4TS
 %attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgpac.so.7
 %dir %{_libdir}/gpac
