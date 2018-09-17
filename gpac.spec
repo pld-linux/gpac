@@ -24,28 +24,27 @@
 %undefine	with_plugin
 %endif
 #
-%define		rel 4
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.5.0
-Release:	16.%{snap}.%{rel}
+Version:	0.7.1
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
-# Source0:	http://downloads.sourceforge.net/gpac/%{name}-%{version}.tar.gz
-Source0:	%{name}-%{snap}.tar.bz2
-# Source0-md5:	9e37b324e490d3118622d77bf238cb16
+Source0:	https://github.com/gpac/gpac/archive/v%{version}.tar.gz
+# Source0-md5:	3b78b7b5bc022bbdeca193cc80281960
 Patch0:		%{name}-install.patch
-Patch1:		%{name}-xulrunner.patch
-Patch2:		%{name}-amr.patch
+
 Patch3:		%{name}-install-is-not-clean.patch
 Patch4:		%{name}-flags.patch
 Patch5:		wxWidgets3.patch
-Patch6:		%{name}-js.patch
+
 Patch7:		%{name}-apps.patch
 Patch8:		ffmpeg3.patch
 Patch9:		ffmpeg4.patch
-URL:		http://gpac.sourceforge.net/
+Patch10:	openssl.patch
+Patch11:	dont-err-build-on-uknown-system.patch
+URL:		http://www.gpac.io
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	SDL-devel
@@ -163,17 +162,18 @@ GPAC plugin for Netscape-compatible WWW browsers.
 Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 
 %prep
-%setup -q -n %{name}
+%setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
+
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
+
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
+%patch11 -p1
 
 sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 chmod a+x configure
@@ -181,6 +181,7 @@ chmod a+x configure
 %build
 # not autoconf configure
 ./configure \
+	--verbose \
 	--prefix=%{_prefix} \
 	--libdir=%{_lib} \
 	--mandir=%{_mandir} \
@@ -191,7 +192,7 @@ chmod a+x configure
 	%{!?with_wx:--disable-wx} \
 	%{?with_amr:--enable-amr} \
 	--enable-pic \
-	--extra-cflags="%{rpmcflags} -DFF_API_CLOSE_INPUT_FILE" \
+	--extra-cflags="%{rpmcflags}" \
 	--extra-ldflags="%{rpmldflags}" \
 	%{?with_plugin:--mozdir=%{_browserpluginsdir}} \
 	%{?with_plugin:--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"} \
@@ -236,11 +237,12 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS BUGS Changelog README TODO
+%doc AUTHORS BUGS Changelog README.md TODO
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
+%attr(755,root,root) %{_bindir}/MP4TS
 %attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so.3
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so.7
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac

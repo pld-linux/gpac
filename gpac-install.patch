@@ -1,18 +1,6 @@
---- gpac/Makefile.orig	2008-10-23 17:40:38.000000000 +0200
-+++ gpac/Makefile	2011-02-05 07:18:41.996686361 +0100
-@@ -59,9 +59,6 @@
- ifeq ($(CONFIG_WIN32),yes)
- 	install $(INSTFLAGS) -m 755 bin/gcc/libgpac.dll $(prefix)/$(libdir)
- else
--ifeq ($(DEBUGBUILD),no)
--	$(STRIP) bin/gcc/libgpac.$(DYN_LIB_SUFFIX)
--endif
- ifeq ($(CONFIG_DARWIN),yes)
- 	install -m 755 bin/gcc/libgpac.$(DYN_LIB_SUFFIX) $(DESTDIR)$(prefix)/$(libdir)/libgpac-$(VERSION).$(DYN_LIB_SUFFIX)
- 	ln -sf libgpac-$(VERSION).$(DYN_LIB_SUFFIX) $(DESTDIR)$(prefix)/$(libdir)/libgpac.$(DYN_LIB_SUFFIX)
---- gpac/applications/osmozilla/Makefile.orig	2008-11-24 09:54:12.000000000 +0100
-+++ gpac/applications/osmozilla/Makefile	2011-02-05 07:20:46.968690551 +0100
-@@ -6,10 +6,6 @@
+--- gpac-0.7.1/applications/osmozilla/Makefile~	2017-04-26 13:33:17.000000000 +0200
++++ gpac-0.7.1/applications/osmozilla/Makefile	2018-09-17 13:57:38.870996859 +0200
+@@ -6,10 +6,6 @@ ifeq ($(CONFIG_WIN32),yes)
  USER_NAME=root
  else
  USER_NAME=$(shell whoami)
@@ -22,8 +10,8 @@
 -endif
  endif
  
- CFLAGS=$(CPPFLAGS) $(XUL_CFLAGS) -I$(SRC_PATH)/include
-@@ -68,19 +68,8 @@ ifeq ($(CONFIG_WIN32),yes)
+ CFLAGS=$(CXXFLAGS) $(XUL_CFLAGS) -I"$(SRC_PATH)/include"
+@@ -72,19 +68,8 @@ ifeq ($(CONFIG_WIN32),yes)
  endif
  
  install: 
@@ -37,12 +25,20 @@
 -	$(INSTALL) -D -m 755 ../../bin/gcc/nposmozilla.xpt "$(HOME)/.mozilla/components/nposmozilla.xpt"
 -endif
 -else
--	$(INSTALL) -D -m 755 ../../bin/gcc/$(LIB) "$(MOZILLA_DIR)/components/$(LIB)"
--	$(INSTALL) -D -m 755 ../../bin/gcc/nposmozilla.xpt "$(MOZILLA_DIR)/components/nposmozilla.xpt"
+ 	$(INSTALL) -D -m 755 ../../bin/gcc/$(LIB) "$(MOZILLA_DIR)/components/$(LIB)"
+ 	$(INSTALL) -D -m 755 ../../bin/gcc/nposmozilla.xpt "$(MOZILLA_DIR)/components/nposmozilla.xpt"
 -endif
-+	$(INSTALL) -D -m 755 ../../bin/gcc/$(LIB) "$(MOZILLA_DIR)/$(LIB)"
-+	$(INSTALL) -D -m 755 ../../bin/gcc/nposmozilla.xpt "$(MOZILLA_DIR)/nposmozilla.xpt"
  
  uninstall:
  ifeq ($(MOZILLA_DIR), local)
-
+--- gpac-0.7.1/Makefile~	2017-04-26 13:33:17.000000000 +0200
++++ gpac-0.7.1/Makefile	2018-09-17 14:27:00.872110746 +0200
+@@ -112,7 +112,7 @@ ifneq ($(CONFIG_WIN32), yes)
+ ifneq ($(CONFIG_FFMPEG), no)
+ ifneq ($(DISABLE_CORE_TOOLS), yes)
+ ifneq ($(DISABLE_AV_PARSERS), yes)
+-	if [ -f bin/gcc/DashCast$(EXE_SUFFIX)g ] ; then \
++	if [ -f bin/gcc/DashCast$(EXE_SUFFIX) ] ; then \
+ 	$(INSTALL) $(INSTFLAGS) -m 755 bin/gcc/DashCast$(EXE_SUFFIX) "$(DESTDIR)$(prefix)/bin" ; \
+ 	fi
+ endif

@@ -1,0 +1,18 @@
+Description: Don't fail build intentionally on unknown systems
+Author: Balint Reczey <balint@balintreczey.hu>
+
+diff --git a/include/gpac/configuration.h b/include/gpac/configuration.h
+index 2c58fc3..70dcafc 100644
+--- a/include/gpac/configuration.h
++++ b/include/gpac/configuration.h
+@@ -147,8 +147,8 @@
+ #define GPAC_HAS_JPEG
+ #define GPAC_HAS_PNG
+ 
+-#else
+-#error "Unknown target platform used with static configuration file"
++//#else
++//#error "Unknown target platform used with static configuration file"
+ #endif
+ 
+ 

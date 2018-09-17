@@ -1,40 +1,22 @@
---- gpac/applications/osmo4_wx/Makefile.orig	2012-06-17 07:51:02.389758176 +0200
-+++ gpac/applications/osmo4_wx/Makefile	2012-06-17 08:25:05.746339091 +0200
-@@ -45,7 +45,7 @@
+--- gpac-0.7.1/applications/osmo4_wx/Makefile~	2018-09-17 12:18:34.000000000 +0200
++++ gpac-0.7.1/applications/osmo4_wx/Makefile	2018-09-17 12:19:25.217933596 +0200
+@@ -46,7 +46,7 @@ SRCS := $(OBJS:.o=.cpp)
  all: $(PROG)
  
  Osmo4$(EXE): $(OBJS)
--	$(CC) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) -L../../bin/gcc -lgpac $(WX_LFLAGS) $(LINKFLAGS)
-+	$(CXX) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) -L../../bin/gcc -lgpac $(WX_LFLAGS) `pkg-config --libs gtk+-2.0` $(LINKFLAGS)
+-	$(CC) -o ../../bin/gcc/$@ $(OBJS) -L../../bin/gcc -lgpac $(WX_LFLAGS) $(LINKFLAGS) $(LDFLAGS)
++	$(CC) -o ../../bin/gcc/$@ $(OBJS) -L../../bin/gcc -lgpac $(WX_LFLAGS) `pkg-config --libs gtk+-2.0` -lstdc++ $(LINKFLAGS) $(LDFLAGS)
  
- %.o: %.cpp
- 	$(CXX) $(CFLAGS) $(WX_CFLAGS) -c -o $@ $< 
---- gpac/src/Makefile.orig	2012-05-23 20:57:42.000000000 +0200
-+++ gpac/src/Makefile	2012-06-15 20:44:50.881728154 +0200
-@@ -195,15 +195,6 @@
- ## libgpac compositor compilation options
- COMPOSITOR_CFLAGS=
- 
--## Add prefix before every lib
--ifneq ($(prefix), /usr/local)
--EXTRALIBS+=-L$(prefix)/lib
--else
--ifneq ($(prefix), /usr)
--EXTRALIBS+=-L$(prefix)/lib
--endif
--endif
--
- ## OpenGL available
- ifeq ($(HAS_OPENGL),yes)
- EXTRALIBS+= $(OGL_LIBS)
---- gpac/modules/jack/Makefile.orig	2012-04-05 14:38:11.000000000 +0200
-+++ gpac/modules/jack/Makefile	2012-06-15 20:46:05.045058375 +0200
-@@ -25,7 +25,7 @@
+ clean: 
+ 	rm -f $(OBJS) ../../bin/gcc/$(PROG)
+--- gpac-0.7.1/modules/jack/Makefile~	2017-04-26 13:33:17.000000000 +0200
++++ gpac-0.7.1/modules/jack/Makefile	2018-09-17 12:20:29.753236206 +0200
+@@ -25,7 +25,7 @@ LIB=gm_jack$(DYN_LIB_SUFFIX)
  all: $(LIB)
  
  $(LIB): $(OBJS)
--	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib  -ljack
-+	$(CC) $(SHFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -ljack
+-	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -L/usr/lib  -ljack
++	$(CC) $(SHFLAGS) $(LDFLAGS) -o ../../bin/gcc/$@ $(OBJS) $(EXTRALIBS) -L../../bin/gcc -lgpac -ljack
  
- 
- %.o: %.c
+ clean: 
+ 	rm -f $(OBJS) ../../bin/gcc/$(LIB)
