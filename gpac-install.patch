@@ -31,14 +31,3 @@
  
  uninstall:
  ifeq ($(MOZILLA_DIR), local)
---- gpac-0.7.1/Makefile~	2017-04-26 13:33:17.000000000 +0200
-+++ gpac-0.7.1/Makefile	2018-09-17 14:27:00.872110746 +0200
-@@ -112,7 +112,7 @@ ifneq ($(CONFIG_WIN32), yes)
- ifneq ($(CONFIG_FFMPEG), no)
- ifneq ($(DISABLE_CORE_TOOLS), yes)
- ifneq ($(DISABLE_AV_PARSERS), yes)
--	if [ -f bin/gcc/DashCast$(EXE_SUFFIX)g ] ; then \
-+	if [ -f bin/gcc/DashCast$(EXE_SUFFIX) ] ; then \
- 	$(INSTALL) $(INSTFLAGS) -m 755 bin/gcc/DashCast$(EXE_SUFFIX) "$(DESTDIR)$(prefix)/bin" ; \
- 	fi
- endif

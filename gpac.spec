@@ -1,37 +1,40 @@
 # TODO:
-# - Platinum UPnP: http://www.plutinosoft.com/platinum
-# - AVCap: http://libavcap.sourceforge.net/
-# - OpenSVCDecoder: http://opensvcdecoder.sourceforge.net/
-# - libfreenect: http://openkinect.org/wiki/Main_Page
+# - Platinum UPnP: http://www.plutinosoft.com/platinum (for platinum module)
+# - OpenSVCDecoder: http://opensvcdecoder.sourceforge.net/ (for opensvc_dec module)
+# - libopenhevc: https://github.com/OpenHEVC/openHEVC (for openhevc_dec module, replaces ffmpeg_in module)
 #
 # Conditional build:
 %bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
+%bcond_without	avcap		# AVCap module
 %bcond_without	directfb	# DirectFB support
 %bcond_without	faad		# AAC decoding support
 %bcond_without	ffmpeg		# ffmpeg support
+%bcond_without	freenect	# freenect (MS Kinect driver) module
 %bcond_without	freetype	# freetype support
 %bcond_without	jpeg		# JPEG support
-%bcond_with	js		# JavaScript support
+%bcond_with	js		# JavaScript support in Osmo4 and modules
 %bcond_without	mad		# MP3 support
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
 %bcond_without	wx		# wxWidgets support
-%bcond_with	plugin		# don't build xulrunner/firefox/iceweasel plugin
+%bcond_with	mozilla		# Mozilla (xulrunner/firefox/iceweasel, NPAPI+XPCOM based) plugin
 #
 %ifarch x32
-%undefine	with_plugin
+%undefine	with_mozilla
 %endif
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.7.1
-Release:	2
+Version:	0.8.0
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
-Source0:	https://github.com/gpac/gpac/archive/v%{version}.tar.gz
-# Source0-md5:	3b78b7b5bc022bbdeca193cc80281960
+#Source0Download: https://github.com/gpac/gpac/releases
+Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	06ecb86b4da83e2d38e108f513c2ed8a
 Patch0:		%{name}-install.patch
+Patch1:		%{name}-cxx.patch
 
 Patch3:		%{name}-install-is-not-clean.patch
 Patch4:		%{name}-flags.patch
@@ -39,14 +42,13 @@ Patch5:		wxWidgets3.patch
 
 Patch7:		%{name}-apps.patch
 Patch8:		ffmpeg3.patch
-Patch9:		ffmpeg4.patch
-Patch10:	openssl.patch
 Patch11:	dont-err-build-on-uknown-system.patch
-URL:		http://www.gpac.io
+URL:		http://www.gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
+%{?with_avcap:BuildRequires:	avcap-devel}
 BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_amr:BuildRequires:	amrnb-devel}
 %{?with_amr:BuildRequires:	amrwb-devel}
@@ -56,6 +58,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_wx:BuildRequires:	gtk+2-devel >= 2:2.20.1}
 BuildRequires:	jack-audio-connection-kit-devel
 %{?with_js:BuildRequires:	js-devel < 2:1.8.5}
+%{?with_freenect:BuildRequires:	libfreenect-devel}
 %{?with_jpeg:BuildRequires:	libjpeg-devel}
 %{?with_mad:BuildRequires:	libmad-devel}
 BuildRequires:	libogg-devel
@@ -63,7 +66,7 @@ BuildRequires:	libogg-devel
 BuildRequires:	libtheora-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	openjpeg-devel
+BuildRequires:	openjpeg-devel >= 1.5
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
@@ -74,8 +77,9 @@ BuildRequires:	unzip
 BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
-%{?with_plugin:BuildRequires:	xulrunner-devel >= 2:9.0.0}
+%{?with_mozilla:BuildRequires:	xulrunner-devel >= 2:9.0.0}
 %{?with_xvid:BuildRequires:	xvid-devel}
+BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -162,6 +166,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %patch3 -p1
 %patch4 -p1
@@ -169,11 +174,12 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
 %patch11 -p1
 
-sed -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
+%{__sed} -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
+%if %{without avcap}
+%{__sed} -i -e 's,has_avcap="yes",has_avcap="no",' configure
+%endif
 chmod a+x configure
 
 %build
@@ -185,17 +191,18 @@ chmod a+x configure
 	--mandir=%{_mandir} \
 	--X11-path=/usr \
 	--cc="%{__cc}" \
-	--cpp="%{__cxx}" \
+	--cxx="%{__cxx}" \
 	--disable-opt \
 	%{!?with_wx:--disable-wx} \
 	%{?with_amr:--enable-amr} \
 	--enable-pic \
-	--extra-cflags="%{rpmcflags}" \
+	--extra-cflags="%{rpmcflags} -I/usr/include/openjpeg-1.5" \
 	--extra-ldflags="%{rpmldflags}" \
-	%{?with_plugin:--mozdir=%{_browserpluginsdir}} \
-	%{?with_plugin:--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"} \
+	%{?with_mozilla:--mozdir=%{_browserpluginsdir}} \
+	%{?with_mozilla:--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"} \
 	%{!?with_faad:--use-faad=no} \
 	%{!?with_ffmpeg:--use-ffmpeg=no} \
+	%{!?with_freenect:--use-freenect=no} \
 	%{!?with_freetype:--use-ft=no} \
 	%{!?with_jpeg:--use-jpeg=no} \
 	%{!?with_js:--use-js=no} \
@@ -219,6 +226,9 @@ install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 	DESTDIR=$RPM_BUILD_ROOT \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_browserpluginsdir}
 
+# needless
+%{__rm} -r $RPM_BUILD_ROOT%{_includedir}/{win32,wince}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -240,7 +250,7 @@ fi
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
 %attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so.7
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so.8
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac
@@ -265,7 +275,7 @@ fi
 %attr(755,root,root) %{_bindir}/Osmo4
 %endif
 
-%if %{with plugin}
+%if %{with mozilla}
 %files -n browser-plugin-%{name}
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_browserpluginsdir}/nposmozilla.so

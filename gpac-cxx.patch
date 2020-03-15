@@ -1,0 +1,47 @@
+--- gpac-0.8.0/configure.orig	2020-03-14 20:22:30.223421888 +0100
++++ gpac-0.8.0/configure	2020-03-15 14:04:05.355022427 +0100
+@@ -698,7 +698,7 @@
+ 
+ 
+ docxx() {
+- $cc -o $TMPO $TMPC $@ 0>/dev/null 2>$TMPL
++ $cxx -o $TMPO $TMPC $@ 0>/dev/null 2>$TMPL
+  dolog $@
+ }
+ 
+@@ -1024,7 +1024,7 @@
+ #include <Platinum.h>
+ int main( void ) { return 0; }
+ EOF
+-if docxx -o $TMPO $TMPC -I$local_inc/platinum $LDFLAGS -L$local_lib -lPlatinum -lPltMediaServer -lPltMediaConnect -lPltMediaRenderer -lNeptune -lZlib -lpthread ; then
++if docxx -I$local_inc/platinum $LDFLAGS -L$local_lib -lPlatinum -lPltMediaServer -lPltMediaConnect -lPltMediaRenderer -lNeptune -lZlib -lpthread ; then
+   has_platinum="yes"
+ fi
+ 
+@@ -1046,7 +1046,7 @@
+   return 0;
+ }
+ EOF
+-if docxx -o $TMPO $TMPC $LDFLAGS $avcap_cflags $avcap_ldflags ; then
++if docxx $LDFLAGS $avcap_cflags $avcap_ldflags ; then
+   has_avcap="yes"
+ else
+     if test "$darwin" = "yes" ; then
+@@ -1056,7 +1056,7 @@
+         avcap_cflags="-I$local_inc -I$local_inc/avcap/linux"
+         avcap_ldflags="-lavcap -lpthread"
+     fi
+-    if docxx -o $TMPO $TMPC $avcap_cflags $LDFLAGS -L$local_lib $avcap_ldflags ; then
++    if docxx $avcap_cflags $LDFLAGS -L$local_lib $avcap_ldflags ; then
+         has_avcap="yes"
+         avcap_ldflags="-L$local_lib $avcap_ldflags"
+     fi
+@@ -2325,7 +2325,7 @@
+ if test "$pkg_config" != "no"; then
+   if test "$has_xul" = "no" ; then
+     if $pkg_config --exists libxul 2>>$logs ; then
+-        if docxx -o $TMPO $TMPCXX `$pkg_config --cflags libxul` `$pkg_config --libs libxul` ; then
++        if docxx `$pkg_config --cflags libxul` `$pkg_config --libs libxul` ; then
+             has_xul="system"
+             xul_flags="`$pkg_config --cflags libxul` `$pkg_config --libs libxul`"
+         fi
