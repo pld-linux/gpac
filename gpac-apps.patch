@@ -1,6 +1,7 @@
---- gpac/applications/Makefile.orig	2012-05-22 23:29:22.000000000 +0200
-+++ gpac/applications/Makefile	2012-06-16 18:26:34.918450437 +0200
-@@ -17,15 +17,15 @@
+diff -urNp -x '*.orig' gpac-0.8.0.org/applications/Makefile gpac-0.8.0/applications/Makefile
+--- gpac-0.8.0.org/applications/Makefile	2019-06-27 12:20:45.000000000 +0200
++++ gpac-0.8.0/applications/Makefile	2021-03-13 09:23:01.300056818 +0100
+@@ -33,15 +33,15 @@ V4STUDIODIR=
  INSTDIRS=mp4client
  ifeq ($(CONFIG_XUL),no)
  else
@@ -19,4 +20,4 @@
 +INSTDIRS+=osmo4_wx
  endif
  
- ALLDIRS=$(APPDIRS)
+ #MP4BOX_STATIC
