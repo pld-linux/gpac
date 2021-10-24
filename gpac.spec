@@ -16,7 +16,6 @@
 %bcond_without	mad		# MP3 support
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
-%bcond_without	wx		# wxWidgets support
 %bcond_with	mozilla		# Mozilla (xulrunner/firefox/iceweasel, NPAPI+XPCOM based) plugin
 #
 %ifarch x32
@@ -26,23 +25,14 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	0.8.0
-Release:	3
+Version:	1.0.1
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	06ecb86b4da83e2d38e108f513c2ed8a
-Patch0:		%{name}-install.patch
-Patch1:		%{name}-cxx.patch
-
-Patch3:		%{name}-install-is-not-clean.patch
-Patch4:		%{name}-flags.patch
-Patch5:		wxWidgets3.patch
-
-Patch7:		%{name}-apps.patch
-Patch8:		ffmpeg3.patch
-Patch11:	dont-err-build-on-uknown-system.patch
+# Source0-md5:	52f6711e43a8d271ebec0c2ea2afab4a
+Patch0:		%{name}-install-is-not-clean.patch
 URL:		http://www.gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -55,7 +45,6 @@ BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.6}
 %{?with_freetype:BuildRequires:	freetype-devel}
-%{?with_wx:BuildRequires:	gtk+2-devel >= 2:2.20.1}
 BuildRequires:	jack-audio-connection-kit-devel
 %{?with_js:BuildRequires:	js-devel < 2:1.8.5}
 %{?with_freenect:BuildRequires:	libfreenect-devel}
@@ -66,14 +55,13 @@ BuildRequires:	libogg-devel
 BuildRequires:	libtheora-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	openjpeg-devel >= 1.5
+BuildRequires:	openjpeg2-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
-%{?with_wx:BuildRequires:	wxGTK2-unicode-devel >= 2.6.0}
 BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
@@ -81,6 +69,7 @@ BuildRequires:	xorg-lib-libXv-devel
 %{?with_xvid:BuildRequires:	xvid-devel}
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
+Obsoletes:	gpac-gui < 1.0.1-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -137,18 +126,6 @@ Static GPAC library.
 %description static -l pl.UTF-8
 Statyczna biblioteka GPAC.
 
-%package gui
-Summary:	wxWidgets-based GUI for GPAC
-Summary(pl.UTF-8):	Oparty na wxWidgets graficzny interfejs do GPAC
-Group:		X11/Applications/Multimedia
-Requires:	%{name} = %{version}-%{release}
-
-%description gui
-Osmo4 - wxWidgets-based GUI for GPAC.
-
-%description gui -l pl.UTF-8
-Osmo4 - oparty na wxWidgets graficzny interfejs do GPAC.
-
 %package -n browser-plugin-%{name}
 Summary:	GPAC browser plugin
 Summary(pl.UTF-8):	Wtyczka GPAC do przegląderek WWW
@@ -166,17 +143,7 @@ Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-
-%patch7 -p1
-%patch8 -p1
-%patch11 -p1
-
-%{__sed} -i -e 's/wx-config/wx-gtk2-unicode-config/' configure
 %if %{without avcap}
 %{__sed} -i -e 's,has_avcap="yes",has_avcap="no",' configure
 %endif
@@ -193,10 +160,9 @@ chmod a+x configure
 	--cc="%{__cc}" \
 	--cxx="%{__cxx}" \
 	--disable-opt \
-	%{!?with_wx:--disable-wx} \
 	%{?with_amr:--enable-amr} \
 	--enable-pic \
-	--extra-cflags="%{rpmcflags} -I/usr/include/openjpeg-1.5" \
+	--extra-cflags="%{rpmcflags}" \
 	--extra-ldflags="%{rpmldflags}" \
 	%{?with_mozilla:--mozdir=%{_browserpluginsdir}} \
 	%{?with_mozilla:--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"} \
@@ -226,9 +192,6 @@ install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 	DESTDIR=$RPM_BUILD_ROOT \
 	MOZILLA_DIR=$RPM_BUILD_ROOT%{_browserpluginsdir}
 
-# needless
-%{__rm} -r $RPM_BUILD_ROOT%{_includedir}/{win32,wince}
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -245,18 +208,21 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS BUGS Changelog README.md TODO
-%attr(755,root,root) %{_bindir}/MP42TS
+%doc Changelog README.md
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/MP4Client
+%attr(755,root,root) %{_bindir}/gpac
 %attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so.8
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so.10
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac
 %{_mandir}/man1/gpac.1*
+%{_mandir}/man1/gpac-filters.1*
 %{_mandir}/man1/mp4box.1*
 %{_mandir}/man1/mp4client.1*
+%{_desktopdir}/gpac.desktop
+%{_pixmapsdir}/gpac.png
 
 %files devel
 %defattr(644,root,root,755)
@@ -267,13 +233,6 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libgpac_static.a
-
-%if %{with wx}
-%files gui
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/DashCast
-%attr(755,root,root) %{_bindir}/Osmo4
-%endif
 
 %if %{with mozilla}
 %files -n browser-plugin-%{name}
