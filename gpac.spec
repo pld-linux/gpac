@@ -6,7 +6,7 @@
 # Conditional build:
 %bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
 %bcond_without	avcap		# AVCap module
-%bcond_without	directfb	# DirectFB support
+%bcond_with	directfb	# DirectFB support
 %bcond_without	faad		# AAC decoding support
 %bcond_without	ffmpeg		# ffmpeg support
 %bcond_without	freenect	# freenect (MS Kinect driver) module
