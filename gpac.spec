@@ -25,14 +25,14 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	1.0.1
+Version:	2.2.1
 Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	52f6711e43a8d271ebec0c2ea2afab4a
-Patch0:		%{name}-install-is-not-clean.patch
+# Source0-md5:	a1a4a6c7f1525431b211b5ba47253ed0
+Patch0:		ffmpeg6.patch
 URL:		http://www.gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
@@ -171,7 +171,6 @@ chmod a+x configure
 	%{!?with_freenect:--use-freenect=no} \
 	%{!?with_freetype:--use-ft=no} \
 	%{!?with_jpeg:--use-jpeg=no} \
-	%{!?with_js:--use-js=no} \
 	%{!?with_mad:--use-mad=no} \
 	%{!?with_png:--use-png=no} \
 	%{!?with_xvid:--use-xvid=no} \
@@ -179,7 +178,7 @@ chmod a+x configure
 
 %{!?with_directfb: sed -i 's/CONFIG_DIRECTFB.*/CONFIG_DIRECTFB=no/' config.mak}
 
-%{__make} -j1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -210,19 +209,17 @@ fi
 %defattr(644,root,root,755)
 %doc Changelog README.md
 %attr(755,root,root) %{_bindir}/MP4Box
-%attr(755,root,root) %{_bindir}/MP4Client
 %attr(755,root,root) %{_bindir}/gpac
 %attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so.10
+%attr(755,root,root) %ghost %{_libdir}/libgpac.so.12
 %dir %{_libdir}/gpac
 %attr(755,root,root) %{_libdir}/gpac/gm_*.so
 %{_datadir}/gpac
 %{_mandir}/man1/gpac.1*
 %{_mandir}/man1/gpac-filters.1*
 %{_mandir}/man1/mp4box.1*
-%{_mandir}/man1/mp4client.1*
 %{_desktopdir}/gpac.desktop
-%{_pixmapsdir}/gpac.png
+%{_iconsdir}/hicolor/*x*/apps/gpac.png
 
 %files devel
 %defattr(644,root,root,755)
