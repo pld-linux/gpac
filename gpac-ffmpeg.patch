@@ -1,0 +1,11 @@
+--- gpac-2.4.0/src/filters/ff_mx.c.orig	2024-04-17 19:18:21.000000000 +0200
++++ gpac-2.4.0/src/filters/ff_mx.c	2025-04-18 22:05:55.126427348 +0200
+@@ -247,7 +247,7 @@ static GF_Err ffmx_init_mux(GF_Filter *f
+ }
+ 
+ 
+-#if (LIBAVFORMAT_VERSION_MAJOR <= 59)
++#if (LIBAVFORMAT_VERSION_MAJOR < 61)
+ static int ffavio_write_packet(void *opaque, uint8_t *buf, int buf_size)
+ #else
+ static int ffavio_write_packet(void *opaque, const uint8_t *buf, int buf_size)

@@ -26,7 +26,8 @@ Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	de748e69984cd8b3b695347a3c9ae4d6
-URL:		http://www.gpac.io/
+Patch0:		%{name}-ffmpeg.patch
+URL:		https://gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	SDL-devel
@@ -120,6 +121,7 @@ Statyczna biblioteka GPAC.
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 chmod a+x configure
 
