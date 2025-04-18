@@ -5,7 +5,6 @@
 #
 # Conditional build:
 %bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
-%bcond_without	avcap		# AVCap module
 %bcond_with	directfb	# DirectFB support
 %bcond_without	faad		# AAC decoding support
 %bcond_without	ffmpeg		# ffmpeg support
@@ -16,29 +15,22 @@
 %bcond_without	mad		# MP3 support
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
-%bcond_with	mozilla		# Mozilla (xulrunner/firefox/iceweasel, NPAPI+XPCOM based) plugin
-#
-%ifarch x32
-%undefine	with_mozilla
-%endif
 #
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	2.2.1
+Version:	2.4.0
 Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	a1a4a6c7f1525431b211b5ba47253ed0
-Patch0:		ffmpeg6.patch
+# Source0-md5:	de748e69984cd8b3b695347a3c9ae4d6
 URL:		http://www.gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	SDL-devel
 BuildRequires:	a52dec-libs-devel
-%{?with_avcap:BuildRequires:	avcap-devel}
 BuildRequires:	alsa-lib-devel >= 0.9
 %{?with_amr:BuildRequires:	amrnb-devel}
 %{?with_amr:BuildRequires:	amrwb-devel}
@@ -65,11 +57,11 @@ BuildRequires:	unzip
 BuildRequires:	xmlrpc-c-server-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
-%{?with_mozilla:BuildRequires:	xulrunner-devel >= 2:9.0.0}
 %{?with_xvid:BuildRequires:	xvid-devel}
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 Obsoletes:	gpac-gui < 1.0.1-1
+Obsoletes:	browser-plugin-gpac < 2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -126,27 +118,9 @@ Static GPAC library.
 %description static -l pl.UTF-8
 Statyczna biblioteka GPAC.
 
-%package -n browser-plugin-%{name}
-Summary:	GPAC browser plugin
-Summary(pl.UTF-8):	Wtyczka GPAC do przegląderek WWW
-Group:		X11/Libraries
-Requires:	%{name} = %{version}-%{release}
-Requires:	browser-plugins >= 2.0
-Requires:	browser-plugins(%{_target_base_arch})
-
-%description -n browser-plugin-%{name}
-GPAC plugin for Netscape-compatible WWW browsers.
-
-%description -n browser-plugin-%{name} -l pl.UTF-8
-Wtyczka GPAC dla przeglądarek WWW zgodnych z Netscape.
-
 %prep
 %setup -q
-%patch0 -p1
 
-%if %{without avcap}
-%{__sed} -i -e 's,has_avcap="yes",has_avcap="no",' configure
-%endif
 chmod a+x configure
 
 %build
@@ -164,17 +138,14 @@ chmod a+x configure
 	--enable-pic \
 	--extra-cflags="%{rpmcflags}" \
 	--extra-ldflags="%{rpmldflags}" \
-	%{?with_mozilla:--mozdir=%{_browserpluginsdir}} \
-	%{?with_mozilla:--xulsdk-path="/usr/include/xulrunner -I/usr/include/nspr"} \
 	%{!?with_faad:--use-faad=no} \
 	%{!?with_ffmpeg:--use-ffmpeg=no} \
 	%{!?with_freenect:--use-freenect=no} \
-	%{!?with_freetype:--use-ft=no} \
+	%{!?with_freetype:--use-freetype=no} \
 	%{!?with_jpeg:--use-jpeg=no} \
 	%{!?with_mad:--use-mad=no} \
 	%{!?with_png:--use-png=no} \
-	%{!?with_xvid:--use-xvid=no} \
-	--enable-joystick
+	%{!?with_xvid:--use-xvid=no}
 
 %{!?with_directfb: sed -i 's/CONFIG_DIRECTFB.*/CONFIG_DIRECTFB=no/' config.mak}
 
@@ -188,22 +159,13 @@ install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__make} -j1 -C applications install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	MOZILLA_DIR=$RPM_BUILD_ROOT%{_browserpluginsdir}
+	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun -p /sbin/ldconfig
-
-%post -n browser-plugin-%{name}
-%update_browser_plugins
-
-%postun -n browser-plugin-%{name}
-if [ "$1" = 0 ]; then
-	%update_browser_plugins
-fi
 
 %files
 %defattr(644,root,root,755)
@@ -230,10 +192,3 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libgpac_static.a
-
-%if %{with mozilla}
-%files -n browser-plugin-%{name}
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_browserpluginsdir}/nposmozilla.so
-%{_browserpluginsdir}/nposmozilla.xpt
-%endif
