@@ -4,14 +4,12 @@
 # - libopenhevc: https://github.com/OpenHEVC/openHEVC (for openhevc_dec module, replaces ffmpeg_in module)
 #
 # Conditional build:
-%bcond_with	amr		# AMR-NB and AMR-WB (floating-point) support
 %bcond_with	directfb	# DirectFB support
 %bcond_without	faad		# AAC decoding support
 %bcond_without	ffmpeg		# ffmpeg support
 %bcond_without	freenect	# freenect (MS Kinect driver) module
 %bcond_without	freetype	# freetype support
 %bcond_without	jpeg		# JPEG support
-%bcond_with	js		# JavaScript support in Osmo4 and modules
 %bcond_without	mad		# MP3 support
 %bcond_without	png		# PNG support
 %bcond_without	xvid		# xvid support
@@ -19,27 +17,31 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	2.4.0
-Release:	2
+Version:	26.02.0
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	de748e69984cd8b3b695347a3c9ae4d6
-Patch0:		%{name}-ffmpeg.patch
+# Source0-md5:	bd6021a08293d7bdf2c3c6425fc3f22b
+Patch0:		%{name}-mpeghdec.patch
 URL:		https://gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
+BuildRequires:	OpenGL-devel
 BuildRequires:	OpenGL-GLU-devel
-BuildRequires:	SDL-devel
+BuildRequires:	OpenGL-GLX-devel
+# with fallback to SDL 1.x
+BuildRequires:	SDL2-devel >= 2.0
 BuildRequires:	a52dec-libs-devel
 BuildRequires:	alsa-lib-devel >= 0.9
-%{?with_amr:BuildRequires:	amrnb-devel}
-%{?with_amr:BuildRequires:	amrwb-devel}
+BuildRequires:	curl-devel
 %{?with_faad:BuildRequires:	faad2-devel}
 %{?with_ffmpeg:BuildRequires:	ffmpeg-devel >= 0.6}
 %{?with_freetype:BuildRequires:	freetype-devel}
 BuildRequires:	jack-audio-connection-kit-devel
-%{?with_js:BuildRequires:	js-devel < 2:1.8.5}
+BuildRequires:	hidapi-devel
+BuildRequires:	libcaca-devel
+BuildRequires:	libcaption-devel
 %{?with_freenect:BuildRequires:	libfreenect-devel}
 %{?with_jpeg:BuildRequires:	libjpeg-devel}
 %{?with_mad:BuildRequires:	libmad-devel}
@@ -48,7 +50,13 @@ BuildRequires:	libogg-devel
 BuildRequires:	libtheora-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	openjpeg2-devel
+BuildRequires:	mpeghdec-devel
+BuildRequires:	nghttp2-devel
+BuildRequires:	nghttp3-devel
+# TODO: so far only quictls crypto backend supported, but it's not supported in PLD
+#BuildRequires:	ngtcp2-quictls-devel
+#BuildRequires:	ngtcp2-crypto-quictls-devel
+BuildRequires:	openjpeg2-devel >= 2.0
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
@@ -56,6 +64,7 @@ BuildRequires:	rpmbuild(macros) >= 1.357
 BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
 BuildRequires:	xmlrpc-c-server-devel
+BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXv-devel
 %{?with_xvid:BuildRequires:	xvid-devel}
@@ -158,7 +167,8 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 
 %{__make} -j1 install install-lib \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	STRIP=:
 
 %{__make} -j1 -C applications install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -171,13 +181,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc Changelog README.md
+%doc Changelog README.md SECURITY.md
 %attr(755,root,root) %{_bindir}/MP4Box
 %attr(755,root,root) %{_bindir}/gpac
-%attr(755,root,root) %{_libdir}/libgpac.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpac.so.12
+%{_libdir}/libgpac.so.*.*.*
+%ghost %{_libdir}/libgpac.so.16
 %dir %{_libdir}/gpac
-%attr(755,root,root) %{_libdir}/gpac/gm_*.so
+%{_libdir}/gpac/gm_alsa.so
+%{_libdir}/gpac/gm_caca_out.so
+%if %{with freetype}
+%{_libdir}/gpac/gm_ft_font.so
+%endif
+%{_libdir}/gpac/gm_jack.so
+%{_libdir}/gpac/gm_pulseaudio.so
+%{_libdir}/gpac/gm_sdl_out.so
+%{_libdir}/gpac/gm_validator.so
+%{_libdir}/gpac/gm_x11_out.so
 %{_datadir}/gpac
 %{_mandir}/man1/gpac.1*
 %{_mandir}/man1/gpac-filters.1*
@@ -187,7 +206,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgpac.so
+%{_libdir}/libgpac.so
 %{_includedir}/gpac
 %{_pkgconfigdir}/gpac.pc
 
