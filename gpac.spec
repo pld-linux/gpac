@@ -18,13 +18,14 @@ Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
 Version:	26.02.0
-Release:	4
+Release:	5
 License:	LGPL v2+
 Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	bd6021a08293d7bdf2c3c6425fc3f22b
 Patch0:		%{name}-mpeghdec.patch
+Patch1:		ffmpeg9.patch
 URL:		https://gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
 BuildRequires:	OpenGL-devel
@@ -131,6 +132,7 @@ Statyczna biblioteka GPAC.
 %prep
 %setup -q
 %patch -P0 -p1
+%patch -P1 -p1
 
 chmod a+x configure
 
