@@ -17,14 +17,13 @@
 Summary:	GPAC - an implementation of the MPEG-4 Systems standard (ISO/IEC 14496-1)
 Summary(pl.UTF-8):	GPAC - implementacja standardu MPEG-4 Systems (ISO/IEC 14496-1)
 Name:		gpac
-Version:	26.02.0
-Release:	5
+Version:	26.07.0
+Release:	1
 License:	LGPL v2+
 Group:		Applications/Multimedia
 #Source0Download: https://github.com/gpac/gpac/releases
 Source0:	https://github.com/gpac/gpac/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	bd6021a08293d7bdf2c3c6425fc3f22b
-Patch0:		%{name}-mpeghdec.patch
+# Source0-md5:	72e40f8a6851d5706cd23a2290e750ec
 Patch1:		ffmpeg9.patch
 URL:		https://gpac.io/
 %{?with_directfb:BuildRequires:	DirectFB-devel}
@@ -55,7 +54,6 @@ BuildRequires:	mpeghdec-devel
 BuildRequires:	nghttp2-devel
 BuildRequires:	nghttp3-devel
 # TODO: so far only quictls crypto backend supported, but it's not supported in PLD
-#BuildRequires:	ngtcp2-quictls-devel
 #BuildRequires:	ngtcp2-crypto-quictls-devel
 BuildRequires:	openjpeg2-devel >= 2.0
 BuildRequires:	openssl-devel
@@ -109,7 +107,7 @@ do publikacji w celu dystrybucji materiałów.
 Summary:	Header files for GPAC library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GPAC
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description devel
 Header files for GPAC library.
@@ -121,7 +119,7 @@ Pliki nagłówkowe biblioteki GPAC.
 Summary:	Static GPAC library
 Summary(pl.UTF-8):	Statyczna biblioteka GPAC
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 
 %description static
 Static GPAC library.
@@ -131,7 +129,6 @@ Statyczna biblioteka GPAC.
 
 %prep
 %setup -q
-%patch -P0 -p1
 %patch -P1 -p1
 
 chmod a+x configure
